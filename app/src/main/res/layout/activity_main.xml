@@ -18,9 +18,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+<!--    style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
+<!--    app:strokeColor="@color/black"-->
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnTransactions"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -32,12 +34,10 @@
         app:layout_constraintEnd_toStartOf="@+id/btnAccounts"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textNetWorth"
-        app:layout_constraintWidth="0.5"
-        app:strokeColor="@color/black" />
+        app:layout_constraintWidth="0.5" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnAccounts"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -49,8 +49,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnTransactions"
         app:layout_constraintTop_toBottomOf="@+id/textNetWorth"
-        app:layout_constraintWidth="0.5"
-        app:strokeColor="@color/black" />
+        app:layout_constraintWidth="0.5" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainer"
@@ -71,7 +70,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:itemBackground="@color/purple_500"
+        app:itemBackground="@color/light"
         app:itemTextColor="@drawable/selector"
         app:itemIconTint="@drawable/selector"
         app:menu="@menu/bottom_menu" />

@@ -1,7 +1,9 @@
 package com.example.budgetingapp.ui;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -10,6 +12,7 @@ import com.example.budgetingapp.R;
 import com.example.budgetingapp.databinding.ActivityMainBinding;
 import com.example.budgetingapp.ui.fragment.AccountsFragment;
 import com.example.budgetingapp.ui.fragment.TransactionsFragment;
+import com.google.android.material.button.MaterialButton;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         initBottomNav();
         if (savedInstanceState == null) {
             setTransactionsFragment();
+            setFragmentButtonColors(binding.btnTransactions, binding.btnAccounts);
         }
         initFragmentButtonListeners();
     }
@@ -60,10 +64,20 @@ public class MainActivity extends AppCompatActivity {
     private void initFragmentButtonListeners() {
         binding.btnTransactions.setOnClickListener(view -> {
             replaceFragment(TransactionsFragment.class);
+            setFragmentButtonColors(binding.btnTransactions, binding.btnAccounts);
         });
         binding.btnAccounts.setOnClickListener(view -> {
             replaceFragment(AccountsFragment.class);
+            setFragmentButtonColors(binding.btnAccounts, binding.btnTransactions);
         });
+    }
+
+    private void setFragmentButtonColors(MaterialButton activeButton,
+                                         MaterialButton nonActiveButton) {
+        activeButton.setBackgroundColor(Color.rgb(235, 83, 83));
+        activeButton.setTextColor(Color.WHITE);
+        nonActiveButton.setBackgroundColor(Color.rgb(221, 221, 221));
+        nonActiveButton.setTextColor(Color.BLACK);
     }
 
     private void replaceFragment(Class<? extends Fragment> newFragmentClass) {
