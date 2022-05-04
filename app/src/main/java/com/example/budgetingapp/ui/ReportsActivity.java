@@ -1,37 +1,42 @@
-package com.example.budgetingapp.activity;
+package com.example.budgetingapp.ui;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.budgetingapp.R;
-import com.example.budgetingapp.databinding.ActivityMainBinding;
+import com.example.budgetingapp.databinding.ActivityReportsBinding;
 
-public class MainActivity extends AppCompatActivity {
-    private ActivityMainBinding binding;
+
+public class ReportsActivity extends AppCompatActivity {
+    private ActivityReportsBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding = ActivityReportsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.bottomNav.setSelectedItemId(R.id.transactions);
+        initBottomNav();
+    }
+
+    private void initBottomNav() {
+        binding.bottomNav.setSelectedItemId(R.id.reports);
         setBottomNavListeners();
     }
 
     private void setBottomNavListeners() {
         binding.bottomNav.setOnItemSelectedListener((item) -> {
-            if (item.getItemId() == R.id.transactions) {
+            if (item.getItemId() == R.id.accounting) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                overridePendingTransition(0, 0);
                 return true;
             } else if (item.getItemId() == R.id.budgets) {
                 startActivity(new Intent(getApplicationContext(), BudgetsActivity.class));
                 overridePendingTransition(0, 0);
                 return true;
             } else if (item.getItemId() == R.id.reports) {
-                startActivity(new Intent(getApplicationContext(), ReportsActivity.class));
-                overridePendingTransition(0, 0);
                 return true;
             }
 
