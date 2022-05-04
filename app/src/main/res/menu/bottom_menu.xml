@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/transactions"
+        android:title="Transactions"
+        android:icon="@drawable/ic_wallet_72__3x__1" />
+    <item android:id="@+id/budgets"
+        android:title="Budgets"
+        android:icon="@drawable/ic_fund_accounting_72__3x_" />
+    <item android:id="@+id/reports"
+        android:title="Reports"
+        android:icon="@drawable/ic_graph_report_72__3x__1" />
+
+</menu>
