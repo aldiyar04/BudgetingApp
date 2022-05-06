@@ -15,7 +15,7 @@ import com.example.budgetingapp.entity.Account;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-public class AccountVM extends AndroidViewModel implements LifecycleObserver {
+public class AccountVM extends AndroidViewModel {
     private final AccountDao accountDao;
     private final LiveData<List<Account>> accounts;
     private final Executor executor;
@@ -32,7 +32,7 @@ public class AccountVM extends AndroidViewModel implements LifecycleObserver {
     }
 
     public void save(Account account) {
-        executor.execute(() -> accountDao.save(account));
+        executor.execute(() -> accountDao.insert(account));
     }
 
     public void update(Account account) {

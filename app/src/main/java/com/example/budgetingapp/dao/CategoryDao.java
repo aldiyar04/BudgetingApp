@@ -20,9 +20,6 @@ public interface CategoryDao {
     @Query("SELECT * FROM Category WHERE type = 'INCOME'")
     List<Category> findAllForIncome();
 
-    @Query("SELECT * FROM Category WHERE id=:id")
-    Category findById(long id);
-
     @Insert
-    void save(Category category);
+    void insert(Category category);
 }

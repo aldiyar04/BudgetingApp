@@ -1,5 +1,6 @@
 package com.example.budgetingapp.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -8,9 +9,8 @@ import com.example.budgetingapp.entity.enums.TransactionType;
 
 @Entity
 public class Category {
-    @PrimaryKey(autoGenerate = true)
-    public Long id;
-
+    @PrimaryKey
+    @NonNull
     public CategoryName name;
 
     public TransactionType type;
@@ -23,7 +23,6 @@ public class Category {
     @Override
     public String toString() {
         return "Category{" +
-                "id=" + id +
                 ", name='" + name + '\'' +
                 ", type='" + type + '\'' +
                 '}';

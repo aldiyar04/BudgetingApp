@@ -1,13 +1,13 @@
 package com.example.budgetingapp.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
 public class Account {
-    @PrimaryKey(autoGenerate = true)
-    public Long id;
-
+    @PrimaryKey
+    @NonNull
     public String name;
 
     public Long balance;
@@ -20,8 +20,7 @@ public class Account {
     @Override
     public String toString() {
         return "Account{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", balance=" + balance +
                 '}';
     }

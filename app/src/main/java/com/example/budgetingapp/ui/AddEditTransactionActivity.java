@@ -26,27 +26,31 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.budgetingapp.R;
 import com.example.budgetingapp.databinding.ActivityAddEditTransactionBinding;
+import com.example.budgetingapp.entity.Transaction;
 import com.example.budgetingapp.entity.enums.CategoryName;
 import com.example.budgetingapp.entity.enums.TransactionType;
 import com.example.budgetingapp.ui.adapter.AccountAdapter;
 import com.example.budgetingapp.ui.adapter.CategoryAdapter;
 import com.example.budgetingapp.viewmodel.AccountVM;
+import com.example.budgetingapp.viewmodel.TransactionVM;
 
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 public class AddEditTransactionActivity extends AppCompatActivity {
-    public static final String IN_EXTRA_ACTIVITY_TYPE = "ActivityType";
-    public static final int IN_EXTRA_ACTIVITY_TYPE_ADD = 0;
-    public static final int IN_EXTRA_ACTIVITY_TYPE_EDIT_EXPENSE = 1;
-    public static final int IN_EXTRA_ACTIVITY_TYPE_EDIT_INCOME = 2;
+    public static final String EXTRA_ACTIVITY_TYPE = "ActivityType";
+    public static final int EXTRA_ACTIVITY_TYPE_ADD = 0;
+    public static final int EXTRA_ACTIVITY_TYPE_EDIT_EXPENSE = 1;
+    public static final int EXTRA_ACTIVITY_TYPE_EDIT_INCOME = 2;
 
-    public static final String OUT_EXTRA_TRANSACTION_AMOUNT = "TransactionAmount";
+    public static final String EXTRA_EDITED_TRANSACTION_ID = "EditedTransactionID";
 
     private static final int MAX_NUMBER_LENGTH = 8;
     private ActivityAddEditTransactionBinding binding;
 
     private View currentHeaderView;
     private RecyclerView currentCategoryRecyclerView;
+    private AccountAdapter accountAdapter;
     private static final int TOP_MARGIN_CATEGORY_RECYCLER_VIEW = 130;
     private static final int START_MARGIN_CATEGORY_RECYCLER_VIEW = 10;
 
@@ -63,9 +67,9 @@ public class AddEditTransactionActivity extends AppCompatActivity {
     }
 
     private void setAccountRecyclerView() {
-        AccountAdapter accAdapter = new AccountAdapter(this);
-        initObservingAccountsByAdapter(accAdapter);
-        RecyclerView accRecyclerView = createRecyclerView(accAdapter, false);
+        accountAdapter = new AccountAdapter(this);
+        initObservingAccountsByAdapter(accountAdapter);
+        RecyclerView accRecyclerView = createRecyclerView(accountAdapter, false);
         addRecyclerViewToConstraintLayout(accRecyclerView,
                 405, 10);
     }
@@ -85,41 +89,32 @@ public class AddEditTransactionActivity extends AppCompatActivity {
     private void initObservingAccountsByAdapter(AccountAdapter accAdapter) {
         AccountVM accountVM = new ViewModelProvider(this).get(AccountVM.class);
         accountVM.getAllAccounts().observe(this, accAdapter::setAccounts);
-        getLifecycle().addObserver(accountVM);
     }
-
-//    private void setAccountSpinner() {
-//        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-//                R.layout.spinner_item,
-//                new String[]{"Cash", "Bank Card"});
-////        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        binding.spinnerAccount.setAdapter(adapter);
-////        spinner.setOnItemSelectedListener(new TransactionTypeSpinnerListener());
-//    }
 
 
     private void setHeaderAndCategoryRecyclerViewBasedOnActivityType() {
-        int activityType = getIntent().getIntExtra(IN_EXTRA_ACTIVITY_TYPE,
-                IN_EXTRA_ACTIVITY_TYPE_ADD);
+        int activityType = getIntent().getIntExtra(EXTRA_ACTIVITY_TYPE,
+                EXTRA_ACTIVITY_TYPE_ADD);
 
-        // 180, 10 - recycler view below "Category" text view
-        // 60, 310 - recycler view to right of "Category" text view
-        if (activityType == IN_EXTRA_ACTIVITY_TYPE_ADD) {
+        if (activityType == EXTRA_ACTIVITY_TYPE_ADD) {
             Spinner header = createHeaderSpinner();
             replaceHeaderView(header);
+            currentHeaderView = header;
             currentCategoryRecyclerView = createExpenseCategoryRecyclerView();
             addRecyclerViewToConstraintLayout(currentCategoryRecyclerView,
                     TOP_MARGIN_CATEGORY_RECYCLER_VIEW, START_MARGIN_CATEGORY_RECYCLER_VIEW);
             return;
-        } else if (activityType == IN_EXTRA_ACTIVITY_TYPE_EDIT_EXPENSE) {
+        } else if (activityType == EXTRA_ACTIVITY_TYPE_EDIT_EXPENSE) {
             TextView header = createHeaderTextView("Edit Expense");
             replaceHeaderView(header);
+            currentHeaderView = header;
             currentCategoryRecyclerView = createExpenseCategoryRecyclerView();
             addRecyclerViewToConstraintLayout(currentCategoryRecyclerView,
                     TOP_MARGIN_CATEGORY_RECYCLER_VIEW, START_MARGIN_CATEGORY_RECYCLER_VIEW);
             return;
-        } else if (activityType == IN_EXTRA_ACTIVITY_TYPE_EDIT_INCOME) {
+        } else if (activityType == EXTRA_ACTIVITY_TYPE_EDIT_INCOME) {
             TextView header = createHeaderTextView("Edit Income");
+            currentHeaderView = header;
             replaceHeaderView(header);
             currentCategoryRecyclerView = createIncomeCategoryRecyclerView();
             addRecyclerViewToConstraintLayout(currentCategoryRecyclerView,
@@ -169,9 +164,9 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 R.layout.header_spinner_item,
                 TransactionType.getStringValueList());
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new TransactionTypeSpinnerListener());
+        spinner.setTag("HeaderSpinner");
         return spinner;
     }
 
@@ -180,6 +175,7 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         textViewHeader.setText(headerText);
         textViewHeader.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30f);
         textViewHeader.setTextColor(Color.BLACK);
+        textViewHeader.setTag("HeaderTextView");
         return textViewHeader;
     }
 
@@ -289,14 +285,14 @@ public class AddEditTransactionActivity extends AppCompatActivity {
     }
 
     private void onDoneButtonClick() {
-        CategoryAdapter currentCatAdapter = (CategoryAdapter) currentCategoryRecyclerView.getAdapter();
-        String selectedCatName = currentCatAdapter.getSelectedCategoryName();
+        CategoryAdapter catAdapter = (CategoryAdapter) currentCategoryRecyclerView.getAdapter();
+        String selectedCatName = catAdapter.getSelectedCategoryName();
 
         if (selectedCatName == null) {
             currentCategoryRecyclerView.setBackgroundColor(Color.RED);
             ValueAnimator colorAnim = ValueAnimator.ofObject(new ArgbEvaluator(),
                     Color.RED, Color.WHITE);
-            colorAnim.setDuration(1000);
+            colorAnim.setDuration(1500);
             colorAnim.addUpdateListener(animator -> {
                 currentCategoryRecyclerView.setBackgroundColor((int) animator.getAnimatedValue());
             });
@@ -304,10 +300,38 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         } else if (isAmountZero()) {
             showToast("Enter a nonzero value");
         } else {
-            Intent intent = new Intent(AddEditTransactionActivity.this,
-                    MainActivity.class);
-            intent.putExtra(OUT_EXTRA_TRANSACTION_AMOUNT, getAmount());
-            setResult(RESULT_OK, intent);
+            TransactionVM transactionVM = new ViewModelProvider(this).get(TransactionVM.class);
+
+            String selectedAccName = accountAdapter.getSelectedAccountName();
+            long enteredAmount = getAmount();
+
+            int activityType = getIntent().getIntExtra(EXTRA_ACTIVITY_TYPE, -1);
+            if (activityType == EXTRA_ACTIVITY_TYPE_ADD) {
+                Spinner headerSpinner = binding.layoutAddEditTransaction.findViewWithTag("HeaderSpinner");
+                String txTypeStr = headerSpinner.getSelectedItem().toString();
+
+                Transaction newTx = Transaction.builder()
+                        .categoryName(selectedCatName)
+                        .accountName(selectedAccName)
+                        .type(TransactionType.fromString(txTypeStr))
+                        .amount(enteredAmount)
+                        .build();
+                transactionVM.save(newTx);
+            } else if (activityType == EXTRA_ACTIVITY_TYPE_EDIT_EXPENSE ||
+                    activityType == EXTRA_ACTIVITY_TYPE_EDIT_INCOME) {
+                int editedTxID = getIntent().getIntExtra(EXTRA_EDITED_TRANSACTION_ID, -1);
+                if (editedTxID == -1) {
+                    throw new IllegalStateException("EditedTransactionID extra must be provided");
+                }
+                Transaction editedTx = transactionVM.getByID(editedTxID);
+                if (editedTx == null) {
+                    throw new IllegalStateException("Transaction with ID " + editedTxID + " does not exist");
+                }
+                editedTx.categoryName = selectedCatName;
+                editedTx.accountName = selectedAccName;
+                editedTx.amount = enteredAmount;
+                transactionVM.update(editedTx);
+            }
             finish();
         }
     }

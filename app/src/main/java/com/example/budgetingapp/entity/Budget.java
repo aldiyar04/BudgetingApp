@@ -8,12 +8,12 @@ public class Budget {
     @PrimaryKey(autoGenerate = true)
     public Long id;
 
-    public Long categoryID;
+    public String categoryName;
 
     public Long spendingMax;
 
-    public Budget(Long categoryID, Long spendingMax) {
-        this.categoryID = categoryID;
+    public Budget(String categoryName, Long spendingMax) {
+        this.categoryName = categoryName;
         this.spendingMax = spendingMax;
     }
 
@@ -21,7 +21,7 @@ public class Budget {
     public String toString() {
         return "Budget{" +
                 "id=" + id +
-                ", categoryID=" + categoryID +
+                ", categoryName='" + categoryName + '\'' +
                 ", spendingMax=" + spendingMax +
                 '}';
     }

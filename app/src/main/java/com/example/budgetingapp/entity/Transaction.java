@@ -12,9 +12,9 @@ public class Transaction {
     @PrimaryKey(autoGenerate = true)
     public Long id;
 
-    public Long accountID;
+    public String accountName;
 
-    public Long categoryID;
+    public String categoryName;
 
     public TransactionType type;
 
@@ -29,13 +29,13 @@ public class Transaction {
     public class Builder {
         private Builder() {}
 
-        public Builder account(Long accountID) {
-            Transaction.this.accountID = accountID;
+        public Builder accountName(String accountName) {
+            Transaction.this.accountName = accountName;
             return this;
         }
 
-        public Builder category(Long categoryID) {
-            Transaction.this.categoryID = categoryID;
+        public Builder categoryName(String categoryName) {
+            Transaction.this.categoryName = categoryName;
             return this;
         }
 
@@ -59,8 +59,8 @@ public class Transaction {
     public String toString() {
         return "Transaction{" +
                 "id=" + id +
-                ", accountID=" + accountID +
-                ", categoryID=" + categoryID +
+                ", accountName='" + accountName + '\'' +
+                ", categoryName='" + categoryName + '\'' +
                 ", type=" + type +
                 ", amount=" + amount +
                 ", createdOn=" + createdOn +

@@ -10,7 +10,7 @@ public class CategoryAndBudget {
     @Embedded
     public Category category;
 
-    @Relation(parentColumn = "id", entityColumn = "categoryID")
+    @Relation(parentColumn = "name", entityColumn = "categoryName")
     public Budget budget;
 
     @Override

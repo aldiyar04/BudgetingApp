@@ -1,5 +1,6 @@
 package com.example.budgetingapp.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -13,10 +14,13 @@ import java.util.List;
 @Dao
 public interface TransactionDao {
     @Query("SELECT * FROM `Transaction`")
-    List<Transaction> findAll();
+    LiveData<List<Transaction>> findAll();
+
+    @Query("SELECT * FROM `Transaction` tx WHERE tx.id = :id")
+    Transaction findByID(long id);
 
     @Insert
-    void save(Transaction transaction);
+    void insert(Transaction transaction);
 
     @Update
     void update(Transaction transaction);

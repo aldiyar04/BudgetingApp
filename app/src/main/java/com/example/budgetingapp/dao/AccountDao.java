@@ -16,11 +16,8 @@ public interface AccountDao {
     @Query("SELECT * FROM Account")
     LiveData<List<Account>> findAll();
 
-    @Query("SELECT * FROM Account")
-    List<Account> findAllRaw();
-
     @Insert
-    void save(Account account);
+    void insert(Account account);
 
     @Update
     void update(Account account);

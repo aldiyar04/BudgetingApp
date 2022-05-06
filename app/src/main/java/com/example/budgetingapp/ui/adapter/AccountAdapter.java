@@ -29,6 +29,12 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountH
         this.context = context;
     }
 
+    public String getSelectedAccountName() {
+        return selectedPosition == RecyclerView.NO_POSITION ?
+                null :
+                accounts.get(selectedPosition).name;
+    }
+
     public void setAccounts(List<Account> accounts) {
         this.accounts = accounts;
         notifyDataSetChanged();

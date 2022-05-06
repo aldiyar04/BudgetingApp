@@ -68,14 +68,17 @@ public abstract class BudgetingAppDatabase extends RoomDatabase {
         protected Void doInBackground(Void... voids) {
             Account cashAcc = new Account("Cash", 0L);
             Account bankCardAcc = new Account("Bank Card", 0L);
-            accountDao.save(cashAcc);
-            accountDao.save(bankCardAcc);
+            accountDao.insert(cashAcc);
+            accountDao.insert(bankCardAcc);
 
             Arrays.stream(CategoryName.getExpenseCategories()).forEach(categoryName -> {
-                categoryDao.save(new Category(categoryName, TransactionType.EXPENSE));
+                categoryDao.insert(new Category(categoryName, TransactionType.EXPENSE));
             });
             Arrays.stream(CategoryName.getIncomeCategories()).forEach(categoryName -> {
-                categoryDao.save(new Category(categoryName, TransactionType.INCOME));
+                if (categoryName == CategoryName.OTHER) {
+                    return;
+                }
+                categoryDao.insert(new Category(categoryName, TransactionType.INCOME));
             });
 
             return null;

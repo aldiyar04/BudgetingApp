@@ -23,4 +23,12 @@ public enum TransactionType {
                 .map(TransactionType::toString)
                 .collect(Collectors.toList());
     }
+
+    public static TransactionType fromString(String s) {
+        return Arrays.stream(TransactionType.values())
+                .filter(txType -> txType.toString().equals(s))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No TransactionType with value '" +
+                        s + " exists"));
+    }
 }
