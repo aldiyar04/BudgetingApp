@@ -16,7 +16,7 @@ import dagger.hilt.android.components.ActivityComponent;
 @Module
 @InstallIn(ActivityComponent.class)
 public class BudgetingApp extends Application {
-    private final ExecutorService executorService = Executors.newFixedThreadPool(1);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(3);
 
     @Provides
     public Executor executor() {

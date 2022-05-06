@@ -11,4 +11,10 @@
 <!--    Custom colors-->
     <color name="light">#F7F5F2</color>
     <color name="fire_opal">#EB5353</color>
+    <color name="yellow">#F9D923</color>
+    <color name="green">#36AE7C</color>
+    <color name="metallic_seaweed">#187498</color>
+    <color name="dark_blue">#251D3A</color>
+    <color name="secondary_blue">#325288</color>
+    <color name="light_blue">#C4DDFF</color>
 </resources>

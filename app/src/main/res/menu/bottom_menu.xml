@@ -4,12 +4,12 @@
 
     <item android:id="@+id/accounting"
         android:title="Accounting"
-        android:icon="@drawable/ic_wallet_72__3x__1" />
+        android:icon="@drawable/ic_wallet" />
     <item android:id="@+id/budgets"
         android:title="Budgets"
-        android:icon="@drawable/ic_fund_accounting_72__3x_" />
+        android:icon="@drawable/ic_budgets" />
     <item android:id="@+id/reports"
         android:title="Reports"
-        android:icon="@drawable/ic_graph_report_72__3x__1" />
+        android:icon="@drawable/ic_reports" />
 
 </menu>

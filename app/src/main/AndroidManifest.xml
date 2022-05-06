@@ -11,6 +11,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BudgetingApp">
         <activity
+            android:name=".ui.AddEditTransactionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.TransactionDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.ReportsActivity"
             android:exported="false" />
         <activity

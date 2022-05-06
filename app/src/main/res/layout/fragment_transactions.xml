@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragment.TransactionsFragment">
+    tools:context=".ui.MainActivity">
 
-    <TextView
+    <view class="androidx.recyclerview.widget.RecyclerView"
+        android:id="@+id/txRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Transactions Fragment"
-        android:textSize="40sp"
-        android:gravity="center"/>
+        tools:listitem="@layout/cardview_transaction"/>
 
-</FrameLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/buttonAddTransaction"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="80dp"
+        android:backgroundTint="@color/fire_opal"
+        android:foreground="@drawable/ic_plus" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
