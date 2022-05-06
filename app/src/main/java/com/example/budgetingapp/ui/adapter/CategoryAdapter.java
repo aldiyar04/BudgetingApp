@@ -24,7 +24,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         this.context = context;
     }
 
-    public String getSelectedCategory() {
+    public String getSelectedCategoryName() {
         return selectedPosition == RecyclerView.NO_POSITION ?
                 null :
                 categoryNames[selectedPosition].toString();

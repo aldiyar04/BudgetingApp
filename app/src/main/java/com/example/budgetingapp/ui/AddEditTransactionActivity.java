@@ -1,5 +1,7 @@
 package com.example.budgetingapp.ui;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,7 +28,9 @@ import com.example.budgetingapp.R;
 import com.example.budgetingapp.databinding.ActivityAddEditTransactionBinding;
 import com.example.budgetingapp.entity.enums.CategoryName;
 import com.example.budgetingapp.entity.enums.TransactionType;
+import com.example.budgetingapp.ui.adapter.AccountAdapter;
 import com.example.budgetingapp.ui.adapter.CategoryAdapter;
+import com.example.budgetingapp.viewmodel.AccountVM;
 
 import java.util.Objects;
 
@@ -42,6 +47,8 @@ public class AddEditTransactionActivity extends AppCompatActivity {
 
     private View currentHeaderView;
     private RecyclerView currentCategoryRecyclerView;
+    private static final int TOP_MARGIN_CATEGORY_RECYCLER_VIEW = 130;
+    private static final int START_MARGIN_CATEGORY_RECYCLER_VIEW = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,34 +56,74 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         binding = ActivityAddEditTransactionBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        setHeaderAndCategoryRecyclerViewBasedOnActivityType();
+        setAccountRecyclerView();
         setNumpadButtonListeners();
         setCloseAndDoneButtonListeners();
-
-        setHeaderBasedOnActivityType();
     }
 
-    private void setHeaderBasedOnActivityType() {
+    private void setAccountRecyclerView() {
+        AccountAdapter accAdapter = new AccountAdapter(this);
+        initObservingAccountsByAdapter(accAdapter);
+        RecyclerView accRecyclerView = createRecyclerView(accAdapter, false);
+        addRecyclerViewToConstraintLayout(accRecyclerView,
+                405, 10);
+    }
+
+    private RecyclerView createRecyclerView(RecyclerView.Adapter<?> recyclerViewAdapter,
+                                            boolean hasFixedSize) {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(
+                this, LinearLayoutManager.HORIZONTAL, false
+        );
+        RecyclerView recyclerView = new RecyclerView(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(hasFixedSize);
+        recyclerView.setAdapter(recyclerViewAdapter);
+        return recyclerView;
+    }
+
+    private void initObservingAccountsByAdapter(AccountAdapter accAdapter) {
+        AccountVM accountVM = new ViewModelProvider(this).get(AccountVM.class);
+        accountVM.getAllAccounts().observe(this, accAdapter::setAccounts);
+        getLifecycle().addObserver(accountVM);
+    }
+
+//    private void setAccountSpinner() {
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+//                R.layout.spinner_item,
+//                new String[]{"Cash", "Bank Card"});
+////        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        binding.spinnerAccount.setAdapter(adapter);
+////        spinner.setOnItemSelectedListener(new TransactionTypeSpinnerListener());
+//    }
+
+
+    private void setHeaderAndCategoryRecyclerViewBasedOnActivityType() {
         int activityType = getIntent().getIntExtra(IN_EXTRA_ACTIVITY_TYPE,
                 IN_EXTRA_ACTIVITY_TYPE_ADD);
 
+        // 180, 10 - recycler view below "Category" text view
+        // 60, 310 - recycler view to right of "Category" text view
         if (activityType == IN_EXTRA_ACTIVITY_TYPE_ADD) {
             Spinner header = createHeaderSpinner();
             replaceHeaderView(header);
-            // TODO: set based on tx type preference:
             currentCategoryRecyclerView = createExpenseCategoryRecyclerView();
-            addRecyclerViewToConstraintLayout(currentCategoryRecyclerView);
+            addRecyclerViewToConstraintLayout(currentCategoryRecyclerView,
+                    TOP_MARGIN_CATEGORY_RECYCLER_VIEW, START_MARGIN_CATEGORY_RECYCLER_VIEW);
             return;
         } else if (activityType == IN_EXTRA_ACTIVITY_TYPE_EDIT_EXPENSE) {
             TextView header = createHeaderTextView("Edit Expense");
             replaceHeaderView(header);
             currentCategoryRecyclerView = createExpenseCategoryRecyclerView();
-            addRecyclerViewToConstraintLayout(currentCategoryRecyclerView);
+            addRecyclerViewToConstraintLayout(currentCategoryRecyclerView,
+                    TOP_MARGIN_CATEGORY_RECYCLER_VIEW, START_MARGIN_CATEGORY_RECYCLER_VIEW);
             return;
         } else if (activityType == IN_EXTRA_ACTIVITY_TYPE_EDIT_INCOME) {
             TextView header = createHeaderTextView("Edit Income");
             replaceHeaderView(header);
             currentCategoryRecyclerView = createIncomeCategoryRecyclerView();
-            addRecyclerViewToConstraintLayout(currentCategoryRecyclerView);
+            addRecyclerViewToConstraintLayout(currentCategoryRecyclerView,
+                    TOP_MARGIN_CATEGORY_RECYCLER_VIEW, START_MARGIN_CATEGORY_RECYCLER_VIEW);
             return;
         }
         throw new IllegalStateException("Must provide a valid extra \"IN_EXTRA_ACTIVITY_TYPE\"");
@@ -86,26 +133,18 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         CategoryAdapter expenseCatAdapter = new CategoryAdapter(
                 CategoryName.getExpenseCategories(), this
         );
-        return createCategoryRecyclerView(expenseCatAdapter);
+        return createRecyclerView(expenseCatAdapter, true);
     }
 
     private RecyclerView createIncomeCategoryRecyclerView() {
         CategoryAdapter incomeCatAdapter = new CategoryAdapter(CategoryName.getIncomeCategories(),
                 this);
-        return createCategoryRecyclerView(incomeCatAdapter);
+        return createRecyclerView(incomeCatAdapter, true);
     }
 
-    private RecyclerView createCategoryRecyclerView(CategoryAdapter categoryAdapter) {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(
-                this, LinearLayoutManager.HORIZONTAL, false
-        );
-        RecyclerView recyclerView = new RecyclerView(this);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(categoryAdapter);
-        return recyclerView;
-    }
-
-    private void addRecyclerViewToConstraintLayout(RecyclerView recyclerView) {
+    private void addRecyclerViewToConstraintLayout(RecyclerView recyclerView,
+                                                   int topMargin,
+                                                   int startMargin) {
         recyclerView.setId(View.generateViewId());
 
         ConstraintLayout constraintLayout = binding.layoutAddEditTransaction;
@@ -119,16 +158,16 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         constraintSet.clone(constraintLayout);
         constraintSet.connect(recyclerView.getId(), ConstraintSet.TOP,
                 R.id.header, ConstraintSet.BOTTOM,
-                100);
+                topMargin);
         constraintSet.connect(recyclerView.getId(), ConstraintSet.START,
-                R.id.layoutAddEditTransaction, ConstraintSet.START, 10);
+                R.id.layoutAddEditTransaction, ConstraintSet.START, startMargin);
         constraintSet.applyTo(constraintLayout);
     }
 
     private Spinner createHeaderSpinner() {
         Spinner spinner = new Spinner(this);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                R.layout.spinner_item,
+                R.layout.header_spinner_item,
                 TransactionType.getStringValueList());
 //        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -145,7 +184,7 @@ public class AddEditTransactionActivity extends AppCompatActivity {
     }
 
     private void replaceHeaderView(View newHeader) {
-        ViewManager parent = (ViewManager) binding.header;
+        ViewManager parent = binding.header;
         parent.removeView(currentHeaderView);
 
         // Add new view
@@ -157,9 +196,10 @@ public class AddEditTransactionActivity extends AppCompatActivity {
     }
 
     private void replaceCategoryRecyclerView(RecyclerView newRecyclerView) {
-        ViewManager parent = (ViewManager) binding.layoutAddEditTransaction;
+        ViewManager parent = binding.layoutAddEditTransaction;
         parent.removeView(currentCategoryRecyclerView);
-        addRecyclerViewToConstraintLayout(newRecyclerView);
+        addRecyclerViewToConstraintLayout(newRecyclerView,
+                TOP_MARGIN_CATEGORY_RECYCLER_VIEW, START_MARGIN_CATEGORY_RECYCLER_VIEW);
     }
 
     private void setNumpadButtonListeners() {
@@ -168,9 +208,7 @@ public class AddEditTransactionActivity extends AppCompatActivity {
     }
 
     private void setClearButtonListener() {
-        binding.buttonClear.setOnClickListener(view -> {
-            binding.textViewAmount.setText("0");
-        });
+        binding.buttonClear.setOnClickListener(view -> binding.textViewAmount.setText("0"));
     }
 
     private void setDigitButtonListeners() {
@@ -251,7 +289,19 @@ public class AddEditTransactionActivity extends AppCompatActivity {
     }
 
     private void onDoneButtonClick() {
-        if (isAmountZero()) {
+        CategoryAdapter currentCatAdapter = (CategoryAdapter) currentCategoryRecyclerView.getAdapter();
+        String selectedCatName = currentCatAdapter.getSelectedCategoryName();
+
+        if (selectedCatName == null) {
+            currentCategoryRecyclerView.setBackgroundColor(Color.RED);
+            ValueAnimator colorAnim = ValueAnimator.ofObject(new ArgbEvaluator(),
+                    Color.RED, Color.WHITE);
+            colorAnim.setDuration(1000);
+            colorAnim.addUpdateListener(animator -> {
+                currentCategoryRecyclerView.setBackgroundColor((int) animator.getAnimatedValue());
+            });
+            colorAnim.start();
+        } else if (isAmountZero()) {
             showToast("Enter a nonzero value");
         } else {
             Intent intent = new Intent(AddEditTransactionActivity.this,

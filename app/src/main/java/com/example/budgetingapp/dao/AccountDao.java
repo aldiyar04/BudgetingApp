@@ -1,10 +1,10 @@
 package com.example.budgetingapp.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
-import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.example.budgetingapp.entity.Account;
@@ -13,9 +13,11 @@ import java.util.List;
 
 @Dao
 public interface AccountDao {
-    @Transaction
     @Query("SELECT * FROM Account")
-    List<Account> findAll();
+    LiveData<List<Account>> findAll();
+
+    @Query("SELECT * FROM Account")
+    List<Account> findAllRaw();
 
     @Insert
     void save(Account account);

@@ -12,7 +12,6 @@ import java.util.List;
 
 @Dao
 public interface TransactionDao {
-    @androidx.room.Transaction
     @Query("SELECT * FROM `Transaction`")
     List<Transaction> findAll();
 

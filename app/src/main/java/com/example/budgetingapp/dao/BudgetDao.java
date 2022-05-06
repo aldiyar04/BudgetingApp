@@ -19,7 +19,6 @@ public interface BudgetDao {
     // Category is the parent entity, because Budget has a foreign key that references Category.
     List<CategoryAndBudget> findAll();
 
-    @Transaction
     @Query("SELECT * FROM Budget b WHERE b.categoryID = null")
     Budget findGenericBudget();
 
