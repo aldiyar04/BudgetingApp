@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,7 +36,6 @@ import com.example.budgetingapp.viewmodel.AccountVM;
 import com.example.budgetingapp.viewmodel.TransactionVM;
 
 import java.util.Objects;
-import java.util.stream.IntStream;
 
 public class AddEditTransactionActivity extends AppCompatActivity {
     public static final String EXTRA_ACTIVITY_TYPE = "ActivityType";
@@ -300,6 +300,7 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         } else if (isAmountZero()) {
             showToast("Enter a nonzero value");
         } else {
+
             TransactionVM transactionVM = new ViewModelProvider(this).get(TransactionVM.class);
 
             String selectedAccName = accountAdapter.getSelectedAccountName();

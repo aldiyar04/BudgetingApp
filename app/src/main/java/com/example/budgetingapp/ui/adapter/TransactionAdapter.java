@@ -52,7 +52,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         }
 
         holder.textViewCategory.setText(tx.categoryName);
-        String txSummary = formatTransactionSummary(tx.amount, TransactionType.EXPENSE);
+        String txSummary = formatTransactionSummary(tx.amount, tx.type);
         holder.textViewSummary.setText(txSummary);
         int color;
         String prefix;
