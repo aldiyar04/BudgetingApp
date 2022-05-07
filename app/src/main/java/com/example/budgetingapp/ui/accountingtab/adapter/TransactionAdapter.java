@@ -1,4 +1,4 @@
-package com.example.budgetingapp.ui.adapter;
+package com.example.budgetingapp.ui.accountingtab.adapter;
 
 import android.graphics.Color;
 import android.view.LayoutInflater;

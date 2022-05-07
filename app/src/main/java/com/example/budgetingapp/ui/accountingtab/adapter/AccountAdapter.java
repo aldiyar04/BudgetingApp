@@ -1,4 +1,4 @@
-package com.example.budgetingapp.ui.adapter;
+package com.example.budgetingapp.ui.accountingtab.adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -40,7 +40,7 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountH
         notifyDataSetChanged();
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        String accountName = sharedPref.getString("AccountName", null);
+        String accountName = sharedPref.getString("AccountName", accounts.get(0).name);
         selectedPosition = IntStream.range(0, accounts.size())
                 .filter(i -> accounts.get(i).name.equalsIgnoreCase(accountName))
                 .findFirst()

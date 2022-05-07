@@ -27,7 +27,7 @@ import java.util.Arrays;
 @Database(entities = {Account.class, Category.class, Transaction.class, Budget.class}, version = 1)
 @TypeConverters({Converters.class})
 public abstract class BudgetingAppDatabase extends RoomDatabase {
-    private static BudgetingAppDatabase instance;
+    private static BudgetingAppDatabase INSTANCE;
 
     public abstract AccountDao accountDao();
     public abstract CategoryDao categoryDao();
@@ -35,53 +35,40 @@ public abstract class BudgetingAppDatabase extends RoomDatabase {
     public abstract BudgetDao budgetDao();
 
     public static synchronized BudgetingAppDatabase getInstance(Context context) {
-        if (instance == null) {
-            instance = Room.databaseBuilder(context.getApplicationContext(),
+        if (INSTANCE == null) {
+            INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                     BudgetingAppDatabase.class, "BudgetingApp.DB")
                     .allowMainThreadQueries()
                     .fallbackToDestructiveMigration()
                     .addCallback(dbCreationCallBack)
                     .build();
         }
-        return instance;
+        return INSTANCE;
     }
 
     private static final RoomDatabase.Callback dbCreationCallBack = new RoomDatabase.Callback() {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
             super.onCreate(db);
-            new PopulateDbAsyncTask(instance).execute();
+            BudgetingApp.getExecutor().execute(() -> {
+                AccountDao accountDao = BudgetingAppDatabase.INSTANCE.accountDao();
+                CategoryDao categoryDao = BudgetingAppDatabase.INSTANCE.categoryDao();
+
+                Account cashAcc = new Account("Cash", 0L);
+                Account bankCardAcc = new Account("Bank Card", 0L);
+                accountDao.insert(cashAcc);
+                accountDao.insert(bankCardAcc);
+
+                Arrays.stream(CategoryName.getExpenseCategories()).forEach(categoryName -> {
+                    categoryDao.insert(new Category(categoryName, TransactionType.EXPENSE));
+                });
+                Arrays.stream(CategoryName.getIncomeCategories()).forEach(categoryName -> {
+                    if (categoryName == CategoryName.OTHER) {
+                        return;
+                    }
+                    categoryDao.insert(new Category(categoryName, TransactionType.INCOME));
+                });
+            });
         }
     };
-
-    private static class PopulateDbAsyncTask extends AsyncTask<Void, Void, Void> {
-        private final AccountDao accountDao;
-        private final CategoryDao categoryDao;
-
-
-        public PopulateDbAsyncTask(BudgetingAppDatabase db) {
-            accountDao = db.accountDao();
-            categoryDao = db.categoryDao();
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            Account cashAcc = new Account("Cash", 0L);
-            Account bankCardAcc = new Account("Bank Card", 0L);
-            accountDao.insert(cashAcc);
-            accountDao.insert(bankCardAcc);
-
-            Arrays.stream(CategoryName.getExpenseCategories()).forEach(categoryName -> {
-                categoryDao.insert(new Category(categoryName, TransactionType.EXPENSE));
-            });
-            Arrays.stream(CategoryName.getIncomeCategories()).forEach(categoryName -> {
-                if (categoryName == CategoryName.OTHER) {
-                    return;
-                }
-                categoryDao.insert(new Category(categoryName, TransactionType.INCOME));
-            });
-
-            return null;
-        }
-    }
 }

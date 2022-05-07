@@ -1,8 +1,5 @@
 package com.example.budgetingapp.entity.enums;
 
-import java.util.Arrays;
-import java.util.List;
-
 public enum CategoryName {
     // Expense categories:
     BILLS("Bills"),
@@ -27,6 +24,17 @@ public enum CategoryName {
 
     CategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public static CategoryName[] getCategoriesOfType(TransactionType type) {
+        switch (type) {
+            case EXPENSE:
+                return getExpenseCategories();
+            case INCOME:
+                return getIncomeCategories();
+        }
+        throw new IllegalStateException("There can only be transactions of types '" +
+                TransactionType.EXPENSE + "' or '" + TransactionType.INCOME + "'");
     }
 
     public static CategoryName[] getExpenseCategories() {

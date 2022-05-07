@@ -1,20 +1,19 @@
-package com.example.budgetingapp.ui.fragment;
+package com.example.budgetingapp.ui.accountingtab.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.example.budgetingapp.databinding.FragmentTransactionsBinding;
-import com.example.budgetingapp.ui.AddEditTransactionActivity;
-import com.example.budgetingapp.ui.adapter.TransactionAdapter;
+import com.example.budgetingapp.ui.accountingtab.AddEditTransactionActivity;
+import com.example.budgetingapp.ui.accountingtab.adapter.TransactionAdapter;
 import com.example.budgetingapp.viewmodel.TransactionVM;
 
 public class TransactionsFragment extends Fragment {
