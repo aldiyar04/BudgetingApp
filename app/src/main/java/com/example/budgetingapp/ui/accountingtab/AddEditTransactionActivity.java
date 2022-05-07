@@ -46,13 +46,11 @@ public class AddEditTransactionActivity extends AppCompatActivity {
     private ActivityAddEditTransactionBinding binding;
 
     private final HeaderViewManager headerViewManager = new HeaderViewManager();
+    private final AccountRecyclerViewManager accountRecyclerViewManager =
+            new AccountRecyclerViewManager();
     private final CategoryRecyclerViewManager categoryRecyclerViewManager =
             new CategoryRecyclerViewManager();
     private TransactionAmountInputManager transactionAmountInputManager;
-
-    private AccountAdapter accountAdapter;
-    private static final int TOP_MARGIN_CATEGORY_RECYCLER_VIEW = 130;
-    private static final int START_MARGIN_CATEGORY_RECYCLER_VIEW = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +64,6 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         setNumpadButtonListeners();
         setCloseAndDoneButtonListeners();
     }
-
 
     private void setHeaderAndCategoryRecyclerViewBasedOnActivityType() {
         int activityType = getIntent().getIntExtra(EXTRA_ACTIVITY_TYPE, EXTRA_ACTIVITY_TYPE_ADD);
@@ -129,16 +126,7 @@ public class AddEditTransactionActivity extends AppCompatActivity {
     }
 
     private void setAccountRecyclerView() {
-        accountAdapter = new AccountAdapter(this);
-        initObservingAccountsByAdapter(accountAdapter);
-        RecyclerView accRecyclerView = createRecyclerView(accountAdapter, false);
-        addRecyclerViewToConstraintLayout(accRecyclerView,
-                405, 10);
-    }
-
-    private void initObservingAccountsByAdapter(AccountAdapter accAdapter) {
-        AccountVM accountVM = new ViewModelProvider(this).get(AccountVM.class);
-        accountVM.getAllAccounts().observe(this, accAdapter::setAccounts);
+        accountRecyclerViewManager.addAccountRecyclerViewToLayout();
     }
 
     private void setNumpadButtonListeners() {
@@ -163,7 +151,7 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         }
 
         String selectedCategoryName = categoryRecyclerViewManager.getSelectedCategoryName();
-        String selectedAccName = accountAdapter.getSelectedAccountName();
+        String selectedAccName = accountRecyclerViewManager.getSelectedAccountName();
         long enteredAmount = transactionAmountInputManager.getEnteredAmount();
 
         int activityType = getIntent().getIntExtra(EXTRA_ACTIVITY_TYPE, -1);
@@ -284,8 +272,33 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         }
     }
 
+    private class AccountRecyclerViewManager {
+        private AccountAdapter accountAdapter;
+
+        void addAccountRecyclerViewToLayout() {
+            accountAdapter = new AccountAdapter(AddEditTransactionActivity.this);
+            initObservingAccountsByAdapter();
+            RecyclerView accRecyclerView = createRecyclerView(accountAdapter, false);
+            addRecyclerViewToConstraintLayout(accRecyclerView,
+                    405, 10);
+        }
+
+        private void initObservingAccountsByAdapter() {
+            AccountVM accountVM = new ViewModelProvider(AddEditTransactionActivity.this)
+                    .get(AccountVM.class);
+            accountVM.getAllAccounts()
+                    .observe(AddEditTransactionActivity.this, accountAdapter::setAccounts);
+        }
+
+        String getSelectedAccountName() {
+            return accountAdapter.getSelectedAccountName();
+        }
+    }
+
     private class CategoryRecyclerViewManager {
         private RecyclerView currentCategoryRecyclerView;
+        private static final int TOP_MARGIN_CATEGORY_RECYCLER_VIEW = 130;
+        private static final int START_MARGIN_CATEGORY_RECYCLER_VIEW = 10;
 
         void addCategoryRecyclerViewToLayout(TransactionType transactionType) {
             currentCategoryRecyclerView = createCategoryRecyclerView(transactionType);
