@@ -38,22 +38,22 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     public void onBindViewHolder(@NonNull TransactionHolder holder, int position) {
         Transaction tx = transactions.get(position);
 
-        // date
-        if (position == 0 || (position > 0 && !transactions.get(position - 1).createdOn.equals(tx.createdOn))) {
-            String dateStr = tx.createdOn.toString();
-            if (tx.createdOn.equals(LocalDate.now())) {
-                dateStr = "Today";
-            } else if (tx.createdOn.plusDays(1L).equals(LocalDate.now())) {
-                dateStr = "Yesterday";
-            }
+        // set date
+        if (position == (getItemCount() - 1) ||
+                (position < getItemCount() &&
+                        !transactions.get(position + 1).createdOn.equals(tx.createdOn))) {
+            String dateStr = getDateString(tx);
             holder.textViewDate.setText(dateStr);
+            holder.textViewDate.setVisibility(View.VISIBLE);
         } else {
             holder.textViewDate.setVisibility(View.GONE);
         }
 
         holder.textViewCategory.setText(tx.categoryName);
-        String txSummary = formatTransactionSummary(tx.amount, tx.type);
-        holder.textViewSummary.setText(txSummary);
+
+        String txAmountSummary = formatTransactionAmountSummary(tx.amount, tx.type);
+        holder.textViewAmountSummary.setText(txAmountSummary);
+
         int color;
         String prefix;
         if (tx.type == TransactionType.EXPENSE) {
@@ -63,12 +63,24 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             color = Color.parseColor("#36AE7C"); // green
             prefix = "to ";
         }
-        holder.textViewSummary.setTextColor(color);
+
+        holder.textViewAmountSummary.setTextColor(color);
+
         String fromAccount = prefix + tx.accountName;
         holder.textViewAccount.setText(fromAccount);
     }
 
-    private String formatTransactionSummary(long txAmount, TransactionType txType) {
+    private String getDateString(Transaction tx) {
+        String dateStr = tx.createdOn.toString();
+        if (tx.createdOn.equals(LocalDate.now())) {
+            dateStr = "Today";
+        } else if (tx.createdOn.plusDays(1L).equals(LocalDate.now())) {
+            dateStr = "Yesterday";
+        }
+        return dateStr;
+    }
+
+    private String formatTransactionAmountSummary(long txAmount, TransactionType txType) {
         String txAmountFormatted = formatTransactionAmount(txAmount);
         String sign = txType == TransactionType.EXPENSE ? "-" : "+";
         return sign + txAmountFormatted + " KZT";
@@ -93,14 +105,14 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     static class TransactionHolder extends RecyclerView.ViewHolder {
         public final TextView textViewDate;
         public final TextView textViewCategory;
-        public final TextView textViewSummary;
+        public final TextView textViewAmountSummary;
         public final TextView textViewAccount;
 
         public TransactionHolder(@NonNull View itemView) {
             super(itemView);
             textViewDate = itemView.findViewById(R.id.textViewDate);
             textViewCategory = itemView.findViewById(R.id.textViewCategory);
-            textViewSummary = itemView.findViewById(R.id.textViewSummary);
+            textViewAmountSummary = itemView.findViewById(R.id.textViewSummary);
             textViewAccount = itemView.findViewById(R.id.textViewAccount);
         }
     }

@@ -9,7 +9,7 @@
     <view class="androidx.recyclerview.widget.RecyclerView"
         android:id="@+id/txRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="560dp"
         tools:listitem="@layout/cardview_transaction"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -33,17 +33,28 @@ public class TransactionsFragment extends Fragment {
             container.removeAllViews();
         }
         binding = FragmentTransactionsBinding.inflate(inflater, container, false);
-        setAddButtonListener();
 
         TransactionAdapter txAdapter = new TransactionAdapter();
-        TransactionVM txVM = new ViewModelProvider(getActivity()).get(TransactionVM.class);
-        txVM.getAllTransactions().observe(getActivity(), txAdapter::setTransactions);
-        RecyclerView txRecyclerView = binding.txRecyclerView;
-        txRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        txRecyclerView.setHasFixedSize(true);
-        txRecyclerView.setAdapter(txAdapter);
+        initObservingTransactionsByAdapter(txAdapter);
+        initTransactionRecyclerView(txAdapter);
+
+        setAddButtonListener();
 
         return binding.getRoot();
+    }
+
+    private void initObservingTransactionsByAdapter(TransactionAdapter txAdapter) {
+        TransactionVM txVM = new ViewModelProvider(getActivity()).get(TransactionVM.class);
+        txVM.getAllTransactions().observe(getActivity(), txAdapter::setTransactions);
+    }
+
+    private void initTransactionRecyclerView(TransactionAdapter txAdapter) {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL, true);
+        layoutManager.setStackFromEnd(true);
+        binding.txRecyclerView.setLayoutManager(layoutManager);
+        binding.txRecyclerView.setHasFixedSize(true);
+        binding.txRecyclerView.setAdapter(txAdapter);
     }
 
     private void setAddButtonListener() {

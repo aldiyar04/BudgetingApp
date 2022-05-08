@@ -244,7 +244,7 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         private Spinner createHeaderSpinner() {
             Spinner spinner = new Spinner(AddEditTransactionActivity.this);
             ArrayAdapter<String> adapter = new ArrayAdapter<>(AddEditTransactionActivity.this,
-                    R.layout.header_spinner_item,
+                    R.layout.spinner_item_header,
                     TransactionType.getStringValueList());
             spinner.setAdapter(adapter);
             spinner.setOnItemSelectedListener(new TransactionTypeSpinnerListener());
