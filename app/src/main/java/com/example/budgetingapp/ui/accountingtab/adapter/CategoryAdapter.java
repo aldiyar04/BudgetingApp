@@ -14,6 +14,8 @@ import com.example.budgetingapp.R;
 import com.example.budgetingapp.entity.enums.CategoryName;
 import com.google.android.material.button.MaterialButton;
 
+import java.util.stream.IntStream;
+
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryHolder> {
     private final CategoryName[] categoryNames;
     private int selectedPosition = RecyclerView.NO_POSITION;
@@ -24,10 +26,20 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         this.context = context;
     }
 
-    public String getSelectedCategoryName() {
+    public void setSelectedCategoryName(CategoryName categoryName) {
+        selectedPosition = IntStream.range(0, categoryNames.length)
+                .filter(i -> categoryNames[i].equals(categoryName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("CategoryName '" +
+                        categoryName.toString() + "' is not in CategoryAdapter.categoryNames. " +
+                        "Category type for the category name argument must be 'Expense' for " +
+                        "expense category adapter, or 'Income' for income one."));
+    }
+
+    public CategoryName getSelectedCategoryName() {
         return selectedPosition == RecyclerView.NO_POSITION ?
                 null :
-                categoryNames[selectedPosition].toString();
+                categoryNames[selectedPosition];
     }
 
     @NonNull

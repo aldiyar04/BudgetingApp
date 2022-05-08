@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.budgetingapp.R;
 import com.example.budgetingapp.entity.Transaction;
 import com.example.budgetingapp.entity.enums.TransactionType;
+import com.example.budgetingapp.ui.accountingtab.fragment.TransactionsFragment;
 
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -20,6 +21,12 @@ import java.util.List;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionHolder> {
     private List<Transaction> transactions = new ArrayList<>();
+    private final TransactionsFragment.TransactionOnClickCallback transactionOnClickCallback;
+
+    public TransactionAdapter(TransactionsFragment.TransactionOnClickCallback
+                                      transactionOnClickCallback) {
+        this.transactionOnClickCallback = transactionOnClickCallback;
+    }
 
     public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
@@ -36,6 +43,18 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull TransactionHolder holder, int position) {
+        initHolderFields(holder, position);
+        setEditTransactionOnClick(holder, position);
+    }
+
+    private void setEditTransactionOnClick(TransactionHolder holder, int position) {
+        Transaction tx = transactions.get(position);
+        holder.itemView.setOnClickListener(view -> {
+            transactionOnClickCallback.onClick(tx);
+        });
+    }
+
+    private void initHolderFields(TransactionHolder holder, int position) {
         Transaction tx = transactions.get(position);
 
         // set date
@@ -49,7 +68,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             holder.textViewDate.setVisibility(View.GONE);
         }
 
-        holder.textViewCategory.setText(tx.categoryName);
+        holder.textViewCategory.setText(tx.categoryName.toString());
 
         String txAmountSummary = formatTransactionAmountSummary(tx.amount, tx.type);
         holder.textViewAmountSummary.setText(txAmountSummary);
@@ -103,12 +122,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
     static class TransactionHolder extends RecyclerView.ViewHolder {
-        public final TextView textViewDate;
-        public final TextView textViewCategory;
-        public final TextView textViewAmountSummary;
-        public final TextView textViewAccount;
+        final TextView textViewDate;
+        final TextView textViewCategory;
+        final TextView textViewAmountSummary;
+        final TextView textViewAccount;
 
-        public TransactionHolder(@NonNull View itemView) {
+        TransactionHolder(@NonNull View itemView) {
             super(itemView);
             textViewDate = itemView.findViewById(R.id.textViewDate);
             textViewCategory = itemView.findViewById(R.id.textViewCategory);

@@ -3,6 +3,7 @@ package com.example.budgetingapp.entity;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.example.budgetingapp.entity.enums.CategoryName;
 import com.example.budgetingapp.entity.enums.TransactionType;
 
 import java.time.LocalDate;
@@ -14,7 +15,7 @@ public class Transaction {
 
     public String accountName;
 
-    public String categoryName;
+    public CategoryName categoryName;
 
     public TransactionType type;
 
@@ -34,7 +35,7 @@ public class Transaction {
             return this;
         }
 
-        public Builder categoryName(String categoryName) {
+        public Builder categoryName(CategoryName categoryName) {
             Transaction.this.categoryName = categoryName;
             return this;
         }

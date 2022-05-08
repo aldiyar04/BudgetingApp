@@ -1,5 +1,7 @@
 package com.example.budgetingapp.entity.enums;
 
+import java.util.Arrays;
+
 public enum CategoryName {
     // Expense categories:
     BILLS("Bills"),
@@ -44,6 +46,14 @@ public enum CategoryName {
 
     public static CategoryName[] getIncomeCategories() {
         return new CategoryName[]{SALARY, SCHOLARSHIP, OTHER};
+    }
+
+    public static CategoryName fromString(String s) {
+        return Arrays.stream(CategoryName.values())
+                .filter(catName -> catName.toString().equals(s))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No CategoryName with value '" +
+                        s + " exists"));
     }
 
     @Override

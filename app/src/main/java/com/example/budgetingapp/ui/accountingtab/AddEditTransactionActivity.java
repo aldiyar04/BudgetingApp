@@ -35,6 +35,8 @@ import com.example.budgetingapp.ui.accountingtab.adapter.CategoryAdapter;
 import com.example.budgetingapp.viewmodel.AccountVM;
 import com.example.budgetingapp.viewmodel.TransactionVM;
 
+import java.util.Objects;
+
 public class AddEditTransactionActivity extends AppCompatActivity {
     public static final String EXTRA_ACTIVITY_TYPE = "ActivityType";
     public static final int EXTRA_ACTIVITY_TYPE_ADD = 0;
@@ -50,18 +52,19 @@ public class AddEditTransactionActivity extends AppCompatActivity {
             new AccountRecyclerViewManager();
     private final CategoryRecyclerViewManager categoryRecyclerViewManager =
             new CategoryRecyclerViewManager();
-    private TransactionAmountInputManager transactionAmountInputManager;
+    private final TransactionAmountInputManager transactionAmountManager =
+            new TransactionAmountInputManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityAddEditTransactionBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        transactionAmountInputManager = new TransactionAmountInputManager(binding, this);
 
         setHeaderAndCategoryRecyclerViewBasedOnActivityType();
-        setAccountRecyclerView();
-        setNumpadButtonListeners();
+        accountRecyclerViewManager.addAccountRecyclerViewToLayout();
+        transactionAmountManager.setNumpadButtonListeners();
+        initEditedTransactionViewValuesIfActivityTypeEdit();
         setCloseAndDoneButtonListeners();
     }
 
@@ -91,46 +94,15 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         }
     }
 
-    private RecyclerView createRecyclerView(RecyclerView.Adapter<?> recyclerViewAdapter,
-                                            boolean hasFixedSize) {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(
-                this, LinearLayoutManager.HORIZONTAL, false
-        );
-        RecyclerView recyclerView = new RecyclerView(this);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(hasFixedSize);
-        recyclerView.setAdapter(recyclerViewAdapter);
-        return recyclerView;
-    }
-
-    private void addRecyclerViewToConstraintLayout(RecyclerView recyclerView,
-                                                   int topMargin,
-                                                   int startMargin) {
-        recyclerView.setId(View.generateViewId());
-
-        ConstraintLayout constraintLayout = binding.layoutAddEditTransaction;
-        ConstraintSet constraintSet = new ConstraintSet();
-
-        RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-        binding.layoutAddEditTransaction.addView(recyclerView, layoutParams);
-
-        constraintSet.clone(constraintLayout);
-        constraintSet.connect(recyclerView.getId(), ConstraintSet.TOP,
-                R.id.header, ConstraintSet.BOTTOM,
-                topMargin);
-        constraintSet.connect(recyclerView.getId(), ConstraintSet.START,
-                R.id.layoutAddEditTransaction, ConstraintSet.START, startMargin);
-        constraintSet.applyTo(constraintLayout);
-    }
-
-    private void setAccountRecyclerView() {
-        accountRecyclerViewManager.addAccountRecyclerViewToLayout();
-    }
-
-    private void setNumpadButtonListeners() {
-        transactionAmountInputManager.setNumpadButtonListeners();
+    private void initEditedTransactionViewValuesIfActivityTypeEdit() {
+        int activityType = getIntent().getIntExtra(EXTRA_ACTIVITY_TYPE, EXTRA_ACTIVITY_TYPE_ADD);
+        if (activityType == EXTRA_ACTIVITY_TYPE_EDIT_EXPENSE ||
+                activityType == EXTRA_ACTIVITY_TYPE_EDIT_INCOME) {
+            Transaction editedTx = getEditedTransaction();
+            categoryRecyclerViewManager.setSelectedCategory(editedTx.categoryName);
+            accountRecyclerViewManager.setSelectedAccount(editedTx.accountName);
+            transactionAmountManager.setAmount(editedTx.amount);
+        }
     }
 
     private void setCloseAndDoneButtonListeners() {
@@ -150,9 +122,9 @@ public class AddEditTransactionActivity extends AppCompatActivity {
             return;
         }
 
-        String selectedCategoryName = categoryRecyclerViewManager.getSelectedCategoryName();
+        CategoryName selectedCategoryName = categoryRecyclerViewManager.getSelectedCategoryName();
         String selectedAccName = accountRecyclerViewManager.getSelectedAccountName();
-        long enteredAmount = transactionAmountInputManager.getEnteredAmount();
+        long enteredAmount = transactionAmountManager.getAmount();
 
         int activityType = getIntent().getIntExtra(EXTRA_ACTIVITY_TYPE, -1);
         if (activityType == EXTRA_ACTIVITY_TYPE_ADD) {
@@ -165,7 +137,7 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         finish();
     }
 
-    private void saveNewTransaction(String categoryName, String accountName, long amount) {
+    private void saveNewTransaction(CategoryName categoryName, String accountName, long amount) {
         TransactionType txType = headerViewManager.getSelectedTransactionTypeFromSpinner();
 
         Transaction newTx = Transaction.builder()
@@ -175,27 +147,27 @@ public class AddEditTransactionActivity extends AppCompatActivity {
                 .amount(amount)
                 .build();
 
-        TransactionVM transactionVM = new ViewModelProvider(this).get(TransactionVM.class);
+        TransactionVM transactionVM = getTransactionVM();
         transactionVM.save(newTx);
     }
 
-    private void updateExistingTransaction(String categoryName, String accountName, long amount) {
+    private TransactionVM getTransactionVM() {
+        return new ViewModelProvider(this).get(TransactionVM.class);
+    }
+
+    private void updateExistingTransaction(CategoryName categoryName, String accountName, long amount) {
         Transaction editedTx = getEditedTransaction();
         editedTx.categoryName = categoryName;
         editedTx.accountName = accountName;
         editedTx.amount = amount;
 
-        TransactionVM transactionVM = new ViewModelProvider(this).get(TransactionVM.class);
+        TransactionVM transactionVM = getTransactionVM();
         transactionVM.update(editedTx);
     }
 
     private Transaction getEditedTransaction() {
-        TransactionVM transactionVM = new ViewModelProvider(this).get(TransactionVM.class);
-
-        int editedTxID = getIntent().getIntExtra(EXTRA_EDITED_TRANSACTION_ID, -1);
-        if (editedTxID == -1) {
-            throw new IllegalStateException("EditedTransactionID extra must be provided");
-        }
+        TransactionVM transactionVM = getTransactionVM();
+        long editedTxID = getEditedTransactionID();
         Transaction editedTx = transactionVM.getByID(editedTxID);
         if (editedTx == null) {
             throw new IllegalStateException("Transaction with ID " + editedTxID + " does not exist");
@@ -203,12 +175,20 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         return editedTx;
     }
 
+    private long getEditedTransactionID() {
+        long editedTxID = getIntent().getLongExtra(EXTRA_EDITED_TRANSACTION_ID, -1);
+        if (editedTxID == -1) {
+            throw new IllegalStateException("EditedTransactionID extra must be provided");
+        }
+        return editedTxID;
+    }
+
     private boolean validateInput() {
-        String selectedCategoryName = categoryRecyclerViewManager.getSelectedCategoryName();
+        CategoryName selectedCategoryName = categoryRecyclerViewManager.getSelectedCategoryName();
         if (selectedCategoryName == null) {
             categoryRecyclerViewManager.showCategorySelectionRequiredAnimation();
             return false;
-        } else if (transactionAmountInputManager.isAmountZero()) {
+        } else if (transactionAmountManager.isAmountZero()) {
             Toast.makeText(this, "Enter a nonzero value", Toast.LENGTH_LONG).show();
             return false;
         }
@@ -272,6 +252,22 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         }
     }
 
+    private class TransactionTypeSpinnerListener implements AdapterView.OnItemSelectedListener {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+            String selectedTxType = parent.getItemAtPosition(pos).toString();
+            if (selectedTxType.equals(TransactionType.EXPENSE.toString())) {
+                categoryRecyclerViewManager.replaceCategoryRecyclerView(TransactionType.EXPENSE);
+            } else if (selectedTxType.equals(TransactionType.INCOME.toString())) {
+                categoryRecyclerViewManager.replaceCategoryRecyclerView(TransactionType.INCOME);
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+        }
+    }
+
     private class AccountRecyclerViewManager {
         private AccountAdapter accountAdapter;
 
@@ -288,6 +284,10 @@ public class AddEditTransactionActivity extends AppCompatActivity {
                     .get(AccountVM.class);
             accountVM.getAllAccounts()
                     .observe(AddEditTransactionActivity.this, accountAdapter::setAccounts);
+        }
+
+        void setSelectedAccount(String accountName) {
+            accountAdapter.setSelectedAccountName(accountName);
         }
 
         String getSelectedAccountName() {
@@ -322,7 +322,12 @@ public class AddEditTransactionActivity extends AppCompatActivity {
             return createRecyclerView(categoryAdapter, true);
         }
 
-        String getSelectedCategoryName() {
+        void setSelectedCategory(CategoryName categoryName) {
+            CategoryAdapter catAdapter = (CategoryAdapter) currentCategoryRecyclerView.getAdapter();
+            catAdapter.setSelectedCategoryName(categoryName);
+        }
+
+        CategoryName getSelectedCategoryName() {
             CategoryAdapter catAdapter = (CategoryAdapter) currentCategoryRecyclerView.getAdapter();
             return catAdapter.getSelectedCategoryName();
         }
@@ -339,19 +344,119 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         }
     }
 
-    private class TransactionTypeSpinnerListener implements AdapterView.OnItemSelectedListener {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-            String selectedTxType = parent.getItemAtPosition(pos).toString();
-            if (selectedTxType.equals(TransactionType.EXPENSE.toString())) {
-                categoryRecyclerViewManager.replaceCategoryRecyclerView(TransactionType.EXPENSE);
-            } else if (selectedTxType.equals(TransactionType.INCOME.toString())) {
-                categoryRecyclerViewManager.replaceCategoryRecyclerView(TransactionType.INCOME);
+    private RecyclerView createRecyclerView(RecyclerView.Adapter<?> recyclerViewAdapter,
+                                            boolean hasFixedSize) {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(
+                this, LinearLayoutManager.HORIZONTAL, false
+        );
+        RecyclerView recyclerView = new RecyclerView(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(hasFixedSize);
+        recyclerView.setAdapter(recyclerViewAdapter);
+        return recyclerView;
+    }
+
+    private void addRecyclerViewToConstraintLayout(RecyclerView recyclerView,
+                                                   int topMargin,
+                                                   int startMargin) {
+        recyclerView.setId(View.generateViewId());
+
+        ConstraintLayout constraintLayout = binding.layoutAddEditTransaction;
+        ConstraintSet constraintSet = new ConstraintSet();
+
+        RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        binding.layoutAddEditTransaction.addView(recyclerView, layoutParams);
+
+        constraintSet.clone(constraintLayout);
+        constraintSet.connect(recyclerView.getId(), ConstraintSet.TOP,
+                R.id.header, ConstraintSet.BOTTOM,
+                topMargin);
+        constraintSet.connect(recyclerView.getId(), ConstraintSet.START,
+                R.id.layoutAddEditTransaction, ConstraintSet.START, startMargin);
+        constraintSet.applyTo(constraintLayout);
+    }
+
+    public class TransactionAmountInputManager {
+        private static final int MAX_NUMBER_LENGTH = 8;
+
+        void setNumpadButtonListeners() {
+            setClearButtonListener();
+            setDigitButtonListeners();
+        }
+
+        void setAmount(long amount) {
+            binding.textViewAmount.setText(String.valueOf(amount));
+        }
+
+        long getAmount() {
+            return Long.parseLong(binding.textViewAmount.getText().toString());
+        }
+
+        private void setClearButtonListener() {
+            binding.buttonClear.setOnClickListener(view -> binding.textViewAmount.setText("0"));
+        }
+
+        private void setDigitButtonListeners() {
+            binding.buttonZero.setOnClickListener(view -> {
+                updateAmountText('0');
+            });
+            binding.buttonOne.setOnClickListener(view -> {
+                updateAmountText('1');
+            });
+            binding.buttonTwo.setOnClickListener(view -> {
+                updateAmountText('2');
+            });
+            binding.buttonThree.setOnClickListener(view -> {
+                updateAmountText('3');
+            });
+            binding.buttonFour.setOnClickListener(view -> {
+                updateAmountText('4');
+            });
+            binding.buttonFive.setOnClickListener(view -> {
+                updateAmountText('5');
+            });
+            binding.buttonSix.setOnClickListener(view -> {
+                updateAmountText('6');
+            });
+            binding.buttonSeven.setOnClickListener(view -> {
+                updateAmountText('7');
+            });
+            binding.buttonEight.setOnClickListener(view -> {
+                updateAmountText('8');
+            });
+            binding.buttonNine.setOnClickListener(view -> {
+                updateAmountText('9');
+            });
+        }
+
+        private void updateAmountText(char digit) {
+            if (isAmountZero()) {
+                setAmountTextToDigit(digit);
+            } else {
+                appendDigitToAmountText(digit);
             }
         }
 
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
+        boolean isAmountZero() {
+            String amount = binding.textViewAmount.getText().toString();
+            return Objects.equals(amount, "0");
+        }
+
+        private void setAmountTextToDigit(char digit) {
+            binding.textViewAmount.setText(String.valueOf(digit));
+        }
+
+        private void appendDigitToAmountText(char digit) {
+            String amount = binding.textViewAmount.getText().toString();
+            if (amount.length() < MAX_NUMBER_LENGTH) {
+                amount += digit;
+            } else {
+                Toast.makeText(AddEditTransactionActivity.this,
+                        "Max number length reached", Toast.LENGTH_LONG).show();
+            }
+            binding.textViewAmount.setText(amount);
         }
     }
 }

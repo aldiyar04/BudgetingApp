@@ -18,15 +18,21 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountHolder> {
     private List<Account> accounts = new ArrayList<>();
+    private Optional<String> selectedAccountName = Optional.empty();
     private int selectedPosition;
     private final Context context;
 
     public AccountAdapter(Context context) {
         this.context = context;
+    }
+
+    public void setSelectedAccountName(String selectedAccountName) {
+        this.selectedAccountName = Optional.of(selectedAccountName);
     }
 
     public String getSelectedAccountName() {
@@ -39,12 +45,20 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountH
         this.accounts = accounts;
         notifyDataSetChanged();
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        String accountName = sharedPref.getString("AccountName", accounts.get(0).name);
-        selectedPosition = IntStream.range(0, accounts.size())
-                .filter(i -> accounts.get(i).name.equalsIgnoreCase(accountName))
-                .findFirst()
-                .orElse(RecyclerView.NO_POSITION);
+        if (selectedAccountName.isPresent()) {
+            selectedPosition = IntStream.range(0, accounts.size())
+                    .filter(i -> accounts.get(i).name.equals(selectedAccountName.get()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("Account '"
+                            + selectedAccountName + "' is not in AccountAdapter.accounts"));
+        } else {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+            String accountName = sharedPref.getString("AccountName", accounts.get(0).name);
+            selectedPosition = IntStream.range(0, accounts.size())
+                    .filter(i -> accounts.get(i).name.equalsIgnoreCase(accountName))
+                    .findFirst()
+                    .orElse(RecyclerView.NO_POSITION);
+        }
     }
 
     @NonNull
