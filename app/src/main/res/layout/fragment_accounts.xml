@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
-    tools:context=".ui.accountingtab.fragment.AccountsFragment">
+    tools:context=".ui.MainActivity">
 
-    <TextView
+    <view class="androidx.recyclerview.widget.RecyclerView"
+        android:id="@+id/accountRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Accounts Fragment"
-        android:textSize="40sp"
-        android:gravity="center"/>
-</FrameLayout>
+        android:layout_height="560dp"
+        android:paddingVertical="10dp"
+        tools:listitem="@layout/cardview_account"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

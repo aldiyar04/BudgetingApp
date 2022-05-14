@@ -1,20 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
     android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp" >
+    android:layout_marginEnd="10dp">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonAccount"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/light_blue"
-        android:textColor="#000"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:text="Cash"
-        android:textSize="16sp"
-        app:cornerRadius="16dp" />
+        android:padding="8dp">
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/textViewAccName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:padding="10dp"
+            android:text="Cash:"
+            android:textColor="@color/dark_blue"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/textViewAccBalance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:padding="10dp"
+            android:text="500,000 KZT"
+            android:textColor="@color/green"
+            android:textSize="25sp" />
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

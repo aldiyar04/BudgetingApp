@@ -22,4 +22,13 @@
         android:backgroundTint="@color/fire_opal"
         android:foreground="@drawable/ic_plus" />
 
+    <TextView
+        android:id="@+id/textViewNoTransactions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No transactions yet"
+        android:textSize="30sp"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

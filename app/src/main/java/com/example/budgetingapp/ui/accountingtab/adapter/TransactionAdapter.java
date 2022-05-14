@@ -1,20 +1,22 @@
 package com.example.budgetingapp.ui.accountingtab.adapter;
 
-import android.graphics.Color;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.budgetingapp.R;
 import com.example.budgetingapp.entity.Transaction;
 import com.example.budgetingapp.entity.enums.TransactionType;
+import com.example.budgetingapp.helper.KztAmountFormatter;
 import com.example.budgetingapp.ui.accountingtab.fragment.TransactionsFragment;
 
-import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,15 +24,28 @@ import java.util.List;
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionHolder> {
     private List<Transaction> transactions = new ArrayList<>();
     private final TransactionsFragment.TransactionOnClickCallback transactionOnClickCallback;
+    private final Context context;
+    private final TextView noTransactionsTextView;
 
     public TransactionAdapter(TransactionsFragment.TransactionOnClickCallback
-                                      transactionOnClickCallback) {
+                                      transactionOnClickCallback, Context context, TextView noTransactionsTextView) {
         this.transactionOnClickCallback = transactionOnClickCallback;
+        this.context = context;
+        this.noTransactionsTextView = noTransactionsTextView;
     }
 
     public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
         notifyDataSetChanged();
+        if (transactions.size() > 0) {
+            noTransactionsTextView.setVisibility(View.GONE);
+        } else {
+            noTransactionsTextView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public Transaction getTransactionAtPosition(int position) {
+        return transactions.get(position);
     }
 
     @NonNull
@@ -49,9 +64,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     private void setEditTransactionOnClick(TransactionHolder holder, int position) {
         Transaction tx = transactions.get(position);
-        holder.itemView.setOnClickListener(view -> {
-            transactionOnClickCallback.onClick(tx);
-        });
+        holder.itemView.setOnClickListener(view -> transactionOnClickCallback.onClick(tx));
+//        holder.cardViewTransactionItem.setOnTouchListener((view, event) -> {
+//            when(event.getAction()) {
+//
+//            }
+//        });
     }
 
     private void initHolderFields(TransactionHolder holder, int position) {
@@ -76,10 +94,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         int color;
         String prefix;
         if (tx.type == TransactionType.EXPENSE) {
-            color = Color.parseColor("#c42a1b"); // red
+            color = getColor(R.color.red);
             prefix = "from ";
         } else {
-            color = Color.parseColor("#36AE7C"); // green
+            color = getColor(R.color.green);
             prefix = "to ";
         }
 
@@ -100,20 +118,13 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
     private String formatTransactionAmountSummary(long txAmount, TransactionType txType) {
-        String txAmountFormatted = formatTransactionAmount(txAmount);
+        String txAmountFormatted = KztAmountFormatter.format(txAmount);
         String sign = txType == TransactionType.EXPENSE ? "-" : "+";
-        return sign + txAmountFormatted + " KZT";
+        return sign + txAmountFormatted;
     }
 
-    private String formatTransactionAmount(long txAmount) {
-        if (txAmount < 0) {
-            txAmount = -txAmount;
-        }
-        NumberFormat formatter = NumberFormat.getCurrencyInstance();
-        String txAmountFormatted = formatter.format(txAmount);
-        // txAmountFormatted has "$" in front
-        // as well as ".00" at the end.
-        return txAmountFormatted.substring(1, txAmountFormatted.length() - 3);
+    private int getColor(int colorID) {
+        return ContextCompat.getColor(TransactionAdapter.this.context, colorID);
     }
 
     @Override
@@ -123,6 +134,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     static class TransactionHolder extends RecyclerView.ViewHolder {
         final TextView textViewDate;
+        final CardView cardViewTransactionItem;
         final TextView textViewCategory;
         final TextView textViewAmountSummary;
         final TextView textViewAccount;
@@ -130,6 +142,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         TransactionHolder(@NonNull View itemView) {
             super(itemView);
             textViewDate = itemView.findViewById(R.id.textViewDate);
+
+            cardViewTransactionItem = itemView.findViewById(R.id.cardViewTransactionItem);
             textViewCategory = itemView.findViewById(R.id.textViewCategory);
             textViewAmountSummary = itemView.findViewById(R.id.textViewSummary);
             textViewAccount = itemView.findViewById(R.id.textViewAccount);

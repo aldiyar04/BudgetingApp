@@ -1,14 +1,18 @@
 package com.example.budgetingapp.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.budgetingapp.R;
 import com.example.budgetingapp.databinding.ActivityMainBinding;
+import com.example.budgetingapp.helper.LongSharedPrefLiveData;
+import com.example.budgetingapp.helper.KztAmountFormatter;
 import com.example.budgetingapp.ui.accountingtab.fragment.AccountsFragment;
 import com.example.budgetingapp.ui.accountingtab.fragment.TransactionsFragment;
 import com.google.android.material.button.MaterialButton;
@@ -28,6 +32,19 @@ public class MainActivity extends AppCompatActivity {
             setFragmentButtonColors(binding.btnTransactions, binding.btnAccounts);
         }
         initFragmentButtonListeners();
+        initObservingNetWorthPrefByHeaderView();
+    }
+
+    public void initObservingNetWorthPrefByHeaderView() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        LongSharedPrefLiveData longSharedPrefLiveData = new LongSharedPrefLiveData(sharedPref,
+                "NetWorth", 0L);
+        longSharedPrefLiveData.observe(this, this::setNetWorthInHeaderView);
+    }
+
+    private void setNetWorthInHeaderView(long netWorth) {
+        String netWorthFormatted = KztAmountFormatter.format(netWorth);
+        binding.textViewNetWorth.setText("Net Worth: " + netWorthFormatted);
     }
 
     private void initBottomNav() {

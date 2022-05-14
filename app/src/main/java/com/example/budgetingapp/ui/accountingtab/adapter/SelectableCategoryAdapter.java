@@ -16,12 +16,12 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.stream.IntStream;
 
-public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryHolder> {
+public class SelectableCategoryAdapter extends RecyclerView.Adapter<SelectableCategoryAdapter.CategoryHolder> {
     private final CategoryName[] categoryNames;
     private int selectedPosition = RecyclerView.NO_POSITION;
     private final Context context;
 
-    public CategoryAdapter(CategoryName[] categoryNames, Context context) {
+    public SelectableCategoryAdapter(CategoryName[] categoryNames, Context context) {
         this.categoryNames = categoryNames;
         this.context = context;
     }
@@ -46,7 +46,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     @Override
     public CategoryHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.cardview_category, parent, false);
+                .inflate(R.layout.cardview_category_button, parent, false);
         return new CategoryHolder(itemView);
     }
 
@@ -72,7 +72,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     private int getColor(int colorID) {
         return ContextCompat.getColor(
-                CategoryAdapter.this.context, colorID
+                SelectableCategoryAdapter.this.context, colorID
         );
     }
 

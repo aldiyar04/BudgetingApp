@@ -31,6 +31,10 @@ public class AccountVM extends AndroidViewModel {
         return accounts;
     }
 
+    public Account getAccountByName(String name) {
+        return accountDao.findByName(name);
+    }
+
     public void save(Account account) {
         executor.execute(() -> accountDao.insert(account));
     }

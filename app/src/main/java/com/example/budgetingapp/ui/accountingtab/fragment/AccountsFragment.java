@@ -1,16 +1,17 @@
 package com.example.budgetingapp.ui.accountingtab.fragment;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.budgetingapp.R;
-import com.example.budgetingapp.databinding.ActivityMainBinding;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.example.budgetingapp.databinding.FragmentAccountsBinding;
+import com.example.budgetingapp.ui.accountingtab.adapter.AccountAdapter;
+import com.example.budgetingapp.viewmodel.AccountVM;
 
 public class AccountsFragment extends Fragment {
     private FragmentAccountsBinding binding;
@@ -29,6 +30,18 @@ public class AccountsFragment extends Fragment {
         if (container != null) {
             container.removeAllViews();
         }
-        return inflater.inflate(R.layout.fragment_accounts, container, false);
+
+        AccountAdapter accountAdapter = new AccountAdapter(getActivity());
+        AccountVM accountVM = new ViewModelProvider(getActivity()).get(AccountVM.class);
+        accountVM.getAllAccounts().observe(getActivity(), accountAdapter::setAccounts);
+        initAccountRecyclerView(accountAdapter);
+
+        return binding.getRoot();
+    }
+
+    private void initAccountRecyclerView(AccountAdapter accountAdapter) {
+        binding.accountRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        binding.accountRecyclerView.setHasFixedSize(true);
+        binding.accountRecyclerView.setAdapter(accountAdapter);
     }
 }

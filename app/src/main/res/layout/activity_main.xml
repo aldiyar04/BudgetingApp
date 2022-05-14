@@ -7,11 +7,12 @@
     tools:context=".ui.MainActivity">
 
     <TextView
-        android:id="@+id/textNetWorth"
+        android:id="@+id/textViewNetWorth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Net Worth: 9,500,000 KZT"
+        android:textColor="@color/secondary_blue"
         android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
@@ -30,7 +31,7 @@
         app:cornerRadius="0dp"
         app:layout_constraintEnd_toStartOf="@+id/btnAccounts"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textNetWorth"
+        app:layout_constraintTop_toBottomOf="@+id/textViewNetWorth"
         app:layout_constraintWidth="0.5" />
 
     <com.google.android.material.button.MaterialButton
@@ -45,7 +46,7 @@
         app:cornerRadius="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnTransactions"
-        app:layout_constraintTop_toBottomOf="@+id/textNetWorth"
+        app:layout_constraintTop_toBottomOf="@+id/textViewNetWorth"
         app:layout_constraintWidth="0.5" />
 
     <androidx.fragment.app.FragmentContainerView

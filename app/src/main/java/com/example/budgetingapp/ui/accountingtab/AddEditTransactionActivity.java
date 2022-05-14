@@ -3,8 +3,10 @@ package com.example.budgetingapp.ui.accountingtab;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -24,14 +26,16 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.budgetingapp.BudgetingAppDatabase;
 import com.example.budgetingapp.R;
 import com.example.budgetingapp.databinding.ActivityAddEditTransactionBinding;
+import com.example.budgetingapp.entity.Account;
 import com.example.budgetingapp.entity.Transaction;
 import com.example.budgetingapp.entity.enums.CategoryName;
 import com.example.budgetingapp.entity.enums.TransactionType;
 import com.example.budgetingapp.ui.MainActivity;
-import com.example.budgetingapp.ui.accountingtab.adapter.AccountAdapter;
-import com.example.budgetingapp.ui.accountingtab.adapter.CategoryAdapter;
+import com.example.budgetingapp.ui.accountingtab.adapter.SelectableAccountAdapter;
+import com.example.budgetingapp.ui.accountingtab.adapter.SelectableCategoryAdapter;
 import com.example.budgetingapp.viewmodel.AccountVM;
 import com.example.budgetingapp.viewmodel.TransactionVM;
 
@@ -128,16 +132,18 @@ public class AddEditTransactionActivity extends AppCompatActivity {
 
         int activityType = getIntent().getIntExtra(EXTRA_ACTIVITY_TYPE, -1);
         if (activityType == EXTRA_ACTIVITY_TYPE_ADD) {
-            saveNewTransaction(selectedCategoryName, selectedAccName, enteredAmount);
+            saveTransactionAndUpdateBalances(selectedCategoryName, selectedAccName, enteredAmount);
         } else if (activityType == EXTRA_ACTIVITY_TYPE_EDIT_EXPENSE ||
                 activityType == EXTRA_ACTIVITY_TYPE_EDIT_INCOME) {
-            updateExistingTransaction(selectedCategoryName, selectedAccName, enteredAmount);
+            updateTransactionAndUpdateBalances(selectedCategoryName, selectedAccName, enteredAmount);
         }
 
         finish();
     }
 
-    private void saveNewTransaction(CategoryName categoryName, String accountName, long amount) {
+    private void saveTransactionAndUpdateBalances(CategoryName categoryName,
+                                                  String accountName,
+                                                  long amount) {
         TransactionType txType = headerViewManager.getSelectedTransactionTypeFromSpinner();
 
         Transaction newTx = Transaction.builder()
@@ -148,21 +154,81 @@ public class AddEditTransactionActivity extends AppCompatActivity {
                 .build();
 
         TransactionVM transactionVM = getTransactionVM();
-        transactionVM.save(newTx);
+        AccountVM accountVM = getAccountVM();
+
+        BudgetingAppDatabase db = BudgetingAppDatabase.getInstance(AddEditTransactionActivity.this);
+        db.runInTransaction(() -> {
+            transactionVM.save(newTx);
+            Account account = accountVM.getAccountByName(accountName);
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            long netWorth = sharedPref.getLong("NetWorth", 0L);
+
+            if (txType == TransactionType.EXPENSE) {
+                account.balance -= amount;
+                netWorth -= amount;
+            } else {
+                account.balance += amount;
+                netWorth += amount;
+            }
+            accountVM.update(account);
+            sharedPref.edit()
+                    .putLong("NetWorth", netWorth)
+                    .apply();
+        });
     }
 
     private TransactionVM getTransactionVM() {
         return new ViewModelProvider(this).get(TransactionVM.class);
     }
 
-    private void updateExistingTransaction(CategoryName categoryName, String accountName, long amount) {
+    private AccountVM getAccountVM() {
+        return new ViewModelProvider(this).get(AccountVM.class);
+    }
+
+    private void updateTransactionAndUpdateBalances(CategoryName newCategoryName,
+                                                    String newAccountName,
+                                                    long newAmount) {
         Transaction editedTx = getEditedTransaction();
-        editedTx.categoryName = categoryName;
-        editedTx.accountName = accountName;
-        editedTx.amount = amount;
+        String oldAccountName = editedTx.accountName;
+        long oldAmount = editedTx.amount;
 
         TransactionVM transactionVM = getTransactionVM();
-        transactionVM.update(editedTx);
+        AccountVM accountVM = getAccountVM();
+
+        BudgetingAppDatabase db = BudgetingAppDatabase.getInstance(AddEditTransactionActivity.this);
+        db.runInTransaction(() -> {
+            Account oldAccount = accountVM.getAccountByName(oldAccountName);
+            Account newAccount = accountVM.getAccountByName(newAccountName);
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            long netWorth = sharedPref.getLong("NetWorth", 0L);
+
+            long amountDiff = newAmount - oldAmount;
+
+            if (newAccount.equals(oldAccount)) {
+                newAccount.balance += amountDiff;
+                accountVM.update(newAccount);
+            } else {
+                if (editedTx.type == TransactionType.EXPENSE) {
+                    newAccount.balance -= newAmount;
+                    oldAccount.balance += oldAmount;
+                } else {
+                    newAccount.balance += newAmount;
+                    oldAccount.balance -= oldAmount;
+                }
+                accountVM.update(oldAccount);
+                accountVM.update(newAccount);
+            }
+            netWorth += amountDiff;
+            sharedPref.edit()
+                    .putLong("NetWorth", netWorth)
+                    .apply();
+
+            editedTx.categoryName = newCategoryName;
+            editedTx.accountName = newAccountName;
+            editedTx.amount = newAmount;
+
+            transactionVM.update(editedTx);
+        });
     }
 
     private Transaction getEditedTransaction() {
@@ -269,10 +335,10 @@ public class AddEditTransactionActivity extends AppCompatActivity {
     }
 
     private class AccountRecyclerViewManager {
-        private AccountAdapter accountAdapter;
+        private SelectableAccountAdapter accountAdapter;
 
         void addAccountRecyclerViewToLayout() {
-            accountAdapter = new AccountAdapter(AddEditTransactionActivity.this);
+            accountAdapter = new SelectableAccountAdapter(AddEditTransactionActivity.this);
             initObservingAccountsByAdapter();
             RecyclerView accRecyclerView = createRecyclerView(accountAdapter, false);
             addRecyclerViewToConstraintLayout(accRecyclerView,
@@ -317,18 +383,18 @@ public class AddEditTransactionActivity extends AppCompatActivity {
 
         private RecyclerView createCategoryRecyclerView(TransactionType transactionType) {
             CategoryName[] categoryNames = CategoryName.getCategoriesOfType(transactionType);
-            CategoryAdapter categoryAdapter = new CategoryAdapter(categoryNames,
+            SelectableCategoryAdapter categoryAdapter = new SelectableCategoryAdapter(categoryNames,
                     AddEditTransactionActivity.this);
             return createRecyclerView(categoryAdapter, true);
         }
 
         void setSelectedCategory(CategoryName categoryName) {
-            CategoryAdapter catAdapter = (CategoryAdapter) currentCategoryRecyclerView.getAdapter();
+            SelectableCategoryAdapter catAdapter = (SelectableCategoryAdapter) currentCategoryRecyclerView.getAdapter();
             catAdapter.setSelectedCategoryName(categoryName);
         }
 
         CategoryName getSelectedCategoryName() {
-            CategoryAdapter catAdapter = (CategoryAdapter) currentCategoryRecyclerView.getAdapter();
+            SelectableCategoryAdapter catAdapter = (SelectableCategoryAdapter) currentCategoryRecyclerView.getAdapter();
             return catAdapter.getSelectedCategoryName();
         }
 
