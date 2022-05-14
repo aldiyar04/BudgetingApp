@@ -1,4 +1,4 @@
-package com.example.budgetingapp.activity;
+package com.example.budgetingapp.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 

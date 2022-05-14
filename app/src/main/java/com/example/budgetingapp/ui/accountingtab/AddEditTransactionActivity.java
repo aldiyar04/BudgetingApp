@@ -1,4 +1,4 @@
-package com.example.budgetingapp.activity;
+package com.example.budgetingapp.ui.accountingtab;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
@@ -26,13 +26,16 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.budgetingapp.AppDatabase;
+import com.example.budgetingapp.BudgetingAppDatabase;
 import com.example.budgetingapp.R;
 import com.example.budgetingapp.databinding.ActivityAddEditTransactionBinding;
 import com.example.budgetingapp.entity.Account;
 import com.example.budgetingapp.entity.Transaction;
 import com.example.budgetingapp.entity.enums.CategoryName;
 import com.example.budgetingapp.entity.enums.TransactionType;
+import com.example.budgetingapp.ui.MainActivity;
+import com.example.budgetingapp.ui.accountingtab.adapter.SelectableAccountAdapter;
+import com.example.budgetingapp.ui.accountingtab.adapter.SelectableCategoryAdapter;
 import com.example.budgetingapp.viewmodel.AccountVM;
 import com.example.budgetingapp.viewmodel.TransactionVM;
 
@@ -153,7 +156,7 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         TransactionVM transactionVM = getTransactionVM();
         AccountVM accountVM = getAccountVM();
 
-        AppDatabase db = AppDatabase.getInstance(AddEditTransactionActivity.this);
+        BudgetingAppDatabase db = BudgetingAppDatabase.getInstance(AddEditTransactionActivity.this);
         db.runInTransaction(() -> {
             transactionVM.save(newTx);
             Account account = accountVM.getAccountByName(accountName);
@@ -192,7 +195,7 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         TransactionVM transactionVM = getTransactionVM();
         AccountVM accountVM = getAccountVM();
 
-        AppDatabase db = AppDatabase.getInstance(AddEditTransactionActivity.this);
+        BudgetingAppDatabase db = BudgetingAppDatabase.getInstance(AddEditTransactionActivity.this);
         db.runInTransaction(() -> {
             Account oldAccount = accountVM.getAccountByName(oldAccountName);
             Account newAccount = accountVM.getAccountByName(newAccountName);

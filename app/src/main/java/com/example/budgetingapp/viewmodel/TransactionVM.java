@@ -6,8 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.example.budgetingapp.App;
-import com.example.budgetingapp.AppDatabase;
+import com.example.budgetingapp.BudgetingApp;
+import com.example.budgetingapp.BudgetingAppDatabase;
 import com.example.budgetingapp.dao.TransactionDao;
 import com.example.budgetingapp.entity.Transaction;
 
@@ -21,9 +21,9 @@ public class TransactionVM extends AndroidViewModel {
 
     public TransactionVM(@NonNull Application application) {
         super(application);
-        transactionDao = AppDatabase.getInstance(application).transactionDao();
+        transactionDao = BudgetingAppDatabase.getInstance(application).transactionDao();
         transactions = transactionDao.findAll();
-        executor = App.getExecutor();
+        executor = BudgetingApp.getExecutor();
     }
 
     public LiveData<List<Transaction>> getAllTransactions() {

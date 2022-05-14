@@ -6,7 +6,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class App extends Application {
+public class BudgetingApp extends Application {
     private static final ExecutorService executorService = Executors.newFixedThreadPool(3);
 
     public static Executor getExecutor() {

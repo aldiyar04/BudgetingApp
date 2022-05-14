@@ -1,6 +1,7 @@
 package com.example.budgetingapp;
 
 import android.content.Context;
+import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
@@ -25,18 +26,18 @@ import java.util.Arrays;
 
 @Database(entities = {Account.class, Category.class, Transaction.class, Budget.class}, version = 1)
 @TypeConverters({Converters.class})
-public abstract class AppDatabase extends RoomDatabase {
-    private static AppDatabase INSTANCE;
+public abstract class BudgetingAppDatabase extends RoomDatabase {
+    private static BudgetingAppDatabase INSTANCE;
 
     public abstract AccountDao accountDao();
     public abstract CategoryDao categoryDao();
     public abstract TransactionDao transactionDao();
     public abstract BudgetDao budgetDao();
 
-    public static synchronized AppDatabase getInstance(Context context) {
+    public static synchronized BudgetingAppDatabase getInstance(Context context) {
         if (INSTANCE == null) {
             INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                    AppDatabase.class, "BudgetingApp.DB")
+                    BudgetingAppDatabase.class, "BudgetingApp.DB")
                     .allowMainThreadQueries()
                     .fallbackToDestructiveMigration()
                     .addCallback(dbCreationCallBack)
@@ -49,9 +50,9 @@ public abstract class AppDatabase extends RoomDatabase {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
             super.onCreate(db);
-            App.getExecutor().execute(() -> {
-                AccountDao accountDao = AppDatabase.INSTANCE.accountDao();
-                CategoryDao categoryDao = AppDatabase.INSTANCE.categoryDao();
+            BudgetingApp.getExecutor().execute(() -> {
+                AccountDao accountDao = BudgetingAppDatabase.INSTANCE.accountDao();
+                CategoryDao categoryDao = BudgetingAppDatabase.INSTANCE.categoryDao();
 
                 Account cashAcc = new Account("Cash", 0L);
                 Account bankCardAcc = new Account("Bank Card", 0L);

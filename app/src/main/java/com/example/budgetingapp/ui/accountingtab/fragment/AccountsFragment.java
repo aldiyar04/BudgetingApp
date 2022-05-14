@@ -1,4 +1,4 @@
-package com.example.budgetingapp.fragment;
+package com.example.budgetingapp.ui.accountingtab.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
