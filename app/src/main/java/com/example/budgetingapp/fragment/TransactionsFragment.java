@@ -1,4 +1,4 @@
-package com.example.budgetingapp.ui.accountingtab.fragment;
+package com.example.budgetingapp.fragment;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -16,13 +16,12 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.budgetingapp.BudgetingAppDatabase;
+import com.example.budgetingapp.AppDatabase;
 import com.example.budgetingapp.databinding.FragmentTransactionsBinding;
 import com.example.budgetingapp.entity.Account;
 import com.example.budgetingapp.entity.Transaction;
 import com.example.budgetingapp.entity.enums.TransactionType;
-import com.example.budgetingapp.ui.accountingtab.AddEditTransactionActivity;
-import com.example.budgetingapp.ui.accountingtab.adapter.TransactionAdapter;
+import com.example.budgetingapp.activity.AddEditTransactionActivity;
 import com.example.budgetingapp.viewmodel.AccountVM;
 import com.example.budgetingapp.viewmodel.TransactionVM;
 
@@ -134,8 +133,8 @@ public class TransactionsFragment extends Fragment {
     private void deleteTransactionAndUpdateBalances(Transaction tx) {
         TransactionVM txVM = getTransactionVM();
         AccountVM accountVM = getAccountVM();
-        BudgetingAppDatabase db =
-                BudgetingAppDatabase.getInstance(getActivity());
+        AppDatabase db =
+                AppDatabase.getInstance(getActivity());
         db.runInTransaction(() -> {
             txVM.delete(tx);
             Account account = accountVM.getAccountByName(tx.accountName);

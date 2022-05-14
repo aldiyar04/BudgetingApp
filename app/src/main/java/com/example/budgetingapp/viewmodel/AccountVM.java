@@ -4,11 +4,10 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LiveData;
 
-import com.example.budgetingapp.BudgetingApp;
-import com.example.budgetingapp.BudgetingAppDatabase;
+import com.example.budgetingapp.App;
+import com.example.budgetingapp.AppDatabase;
 import com.example.budgetingapp.dao.AccountDao;
 import com.example.budgetingapp.entity.Account;
 
@@ -22,9 +21,9 @@ public class AccountVM extends AndroidViewModel {
 
     public AccountVM(@NonNull Application application) {
         super(application);
-        accountDao = BudgetingAppDatabase.getInstance(application).accountDao();
+        accountDao = AppDatabase.getInstance(application).accountDao();
         accounts = accountDao.findAll();
-        executor = BudgetingApp.getExecutor();
+        executor = App.getExecutor();
     }
 
     public LiveData<List<Account>> getAllAccounts() {

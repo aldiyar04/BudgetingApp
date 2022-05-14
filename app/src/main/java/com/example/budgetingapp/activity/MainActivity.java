@@ -1,4 +1,4 @@
-package com.example.budgetingapp.ui;
+package com.example.budgetingapp.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,8 +13,8 @@ import com.example.budgetingapp.R;
 import com.example.budgetingapp.databinding.ActivityMainBinding;
 import com.example.budgetingapp.helper.LongSharedPrefLiveData;
 import com.example.budgetingapp.helper.KztAmountFormatter;
-import com.example.budgetingapp.ui.accountingtab.fragment.AccountsFragment;
-import com.example.budgetingapp.ui.accountingtab.fragment.TransactionsFragment;
+import com.example.budgetingapp.fragment.AccountsFragment;
+import com.example.budgetingapp.fragment.TransactionsFragment;
 import com.google.android.material.button.MaterialButton;
 
 public class MainActivity extends AppCompatActivity {

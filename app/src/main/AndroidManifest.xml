@@ -3,7 +3,7 @@
     package="com.example.budgetingapp">
 
     <application
-        android:name=".BudgetingApp"
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -11,19 +11,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BudgetingApp">
         <activity
-            android:name=".ui.accountingtab.AddEditTransactionActivity"
+            android:name=".activity.AddEditTransactionActivity"
             android:exported="false" />
         <activity
             android:name=".ui.TransactionDetailsActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.ReportsActivity"
+            android:name=".activity.ReportsActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.BudgetsActivity"
+            android:name=".activity.BudgetsActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
