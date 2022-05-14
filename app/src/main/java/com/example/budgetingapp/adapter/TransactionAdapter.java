@@ -1,4 +1,4 @@
-package com.example.budgetingapp.ui.accountingtab.adapter;
+package com.example.budgetingapp.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -15,7 +15,7 @@ import com.example.budgetingapp.R;
 import com.example.budgetingapp.entity.Transaction;
 import com.example.budgetingapp.entity.enums.TransactionType;
 import com.example.budgetingapp.helper.KztAmountFormatter;
-import com.example.budgetingapp.ui.accountingtab.fragment.TransactionsFragment;
+import com.example.budgetingapp.fragment.TransactionsFragment;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

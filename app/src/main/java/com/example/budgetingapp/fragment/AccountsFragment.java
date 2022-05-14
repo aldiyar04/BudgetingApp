@@ -1,4 +1,4 @@
-package com.example.budgetingapp.ui.accountingtab.fragment;
+package com.example.budgetingapp.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.budgetingapp.databinding.FragmentAccountsBinding;
-import com.example.budgetingapp.ui.accountingtab.adapter.AccountAdapter;
+import com.example.budgetingapp.adapter.AccountAdapter;
 import com.example.budgetingapp.viewmodel.AccountVM;
 
 public class AccountsFragment extends Fragment {

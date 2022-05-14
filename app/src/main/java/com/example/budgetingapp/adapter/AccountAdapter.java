@@ -1,4 +1,4 @@
-package com.example.budgetingapp.ui.accountingtab.adapter;
+package com.example.budgetingapp.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

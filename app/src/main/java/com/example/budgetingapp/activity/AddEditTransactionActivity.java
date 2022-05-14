@@ -1,4 +1,4 @@
-package com.example.budgetingapp.ui.accountingtab;
+package com.example.budgetingapp.activity;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
@@ -33,9 +33,8 @@ import com.example.budgetingapp.entity.Account;
 import com.example.budgetingapp.entity.Transaction;
 import com.example.budgetingapp.entity.enums.CategoryName;
 import com.example.budgetingapp.entity.enums.TransactionType;
-import com.example.budgetingapp.ui.MainActivity;
-import com.example.budgetingapp.ui.accountingtab.adapter.SelectableAccountAdapter;
-import com.example.budgetingapp.ui.accountingtab.adapter.SelectableCategoryAdapter;
+import com.example.budgetingapp.adapter.SelectableAccountAdapter;
+import com.example.budgetingapp.adapter.SelectableCategoryAdapter;
 import com.example.budgetingapp.viewmodel.AccountVM;
 import com.example.budgetingapp.viewmodel.TransactionVM;
 

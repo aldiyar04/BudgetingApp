@@ -1,4 +1,4 @@
-package com.example.budgetingapp.ui.accountingtab.fragment;
+package com.example.budgetingapp.fragment;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -21,8 +21,8 @@ import com.example.budgetingapp.databinding.FragmentTransactionsBinding;
 import com.example.budgetingapp.entity.Account;
 import com.example.budgetingapp.entity.Transaction;
 import com.example.budgetingapp.entity.enums.TransactionType;
-import com.example.budgetingapp.ui.accountingtab.AddEditTransactionActivity;
-import com.example.budgetingapp.ui.accountingtab.adapter.TransactionAdapter;
+import com.example.budgetingapp.activity.AddEditTransactionActivity;
+import com.example.budgetingapp.adapter.TransactionAdapter;
 import com.example.budgetingapp.viewmodel.AccountVM;
 import com.example.budgetingapp.viewmodel.TransactionVM;
 
