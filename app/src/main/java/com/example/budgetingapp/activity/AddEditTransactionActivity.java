@@ -93,7 +93,7 @@ public class AddEditTransactionActivity extends AppCompatActivity {
 
             default:
                 throw new IllegalStateException("Must provide a valid value for extra " +
-                        "\"IN_EXTRA_ACTIVITY_TYPE\"");
+                        "\"EXTRA_ACTIVITY_TYPE\"");
         }
     }
 
@@ -109,15 +109,9 @@ public class AddEditTransactionActivity extends AppCompatActivity {
     }
 
     private void setCloseAndDoneButtonListeners() {
-        binding.imageButtonClose.setOnClickListener(view -> onCloseButtonClick());
+        binding.imageButtonClose.setOnClickListener(view -> finish());
         binding.buttonDone.setOnClickListener(view -> onDoneButtonClick());
         binding.imageButtonDone.setOnClickListener(view -> onDoneButtonClick());
-    }
-
-    private void onCloseButtonClick() {
-        Intent intent = new Intent(AddEditTransactionActivity.this, MainActivity.class);
-        setResult(RESULT_CANCELED, intent);
-        finish();
     }
 
     private void onDoneButtonClick() {

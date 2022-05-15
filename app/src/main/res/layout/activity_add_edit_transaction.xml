@@ -270,7 +270,6 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="start"
-            android:layout_weight="1"
             android:background="@null"
             android:layout_marginStart="5dp"
             android:paddingTop="5sp"
@@ -284,7 +283,6 @@
             android:layout_height="48dp"
             android:layout_gravity="end"
             android:layout_marginEnd="5dp"
-            android:layout_weight="1"
             android:background="@null"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/ic_done" />

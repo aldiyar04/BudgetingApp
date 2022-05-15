@@ -13,4 +13,17 @@
         android:paddingVertical="10dp"
         tools:listitem="@layout/cardview_account"/>
 
+    <Button
+        android:id="@+id/buttonAddAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="80dp"
+        android:paddingVertical="8dp"
+        android:backgroundTint="@color/fire_opal"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:text="Add Account" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

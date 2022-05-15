@@ -20,6 +20,7 @@ public enum CategoryName {
     SCHOLARSHIP("Scholarship"),
 
     // Both for expenses and income
+    CORRECTION("Correction"),
     OTHER("Other");
 
     private final String categoryName;
@@ -41,19 +42,16 @@ public enum CategoryName {
 
     public static CategoryName[] getExpenseCategories() {
         return new CategoryName[]{BILLS, FOOD_AND_DRINKS, CLOTHING_AND_FOOTWEAR, TRANSPORTATION,
-        HEALTH_AND_PERSONAL_CARE, HOME_AND_UTILITIES, EDUCATION, SPORTS, GIFTS, LEISURE, OTHER};
+        HEALTH_AND_PERSONAL_CARE, HOME_AND_UTILITIES, EDUCATION, SPORTS, GIFTS, LEISURE,
+                CORRECTION, OTHER};
     }
 
     public static CategoryName[] getIncomeCategories() {
-        return new CategoryName[]{SALARY, SCHOLARSHIP, OTHER};
+        return new CategoryName[]{SALARY, SCHOLARSHIP, CORRECTION, OTHER};
     }
 
-    public static CategoryName fromString(String s) {
-        return Arrays.stream(CategoryName.values())
-                .filter(catName -> catName.toString().equals(s))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("No CategoryName with value '" +
-                        s + " exists"));
+    public boolean isBothForExpensesAndIncome() {
+        return this == CORRECTION || this == OTHER;
     }
 
     @Override

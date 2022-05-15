@@ -63,7 +63,7 @@ public abstract class BudgetingAppDatabase extends RoomDatabase {
                     categoryDao.insert(new Category(categoryName, TransactionType.EXPENSE));
                 });
                 Arrays.stream(CategoryName.getIncomeCategories()).forEach(categoryName -> {
-                    if (categoryName == CategoryName.OTHER) {
+                    if (categoryName.isBothForExpensesAndIncome()) {
                         return;
                     }
                     categoryDao.insert(new Category(categoryName, TransactionType.INCOME));
