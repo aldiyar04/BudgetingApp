@@ -24,7 +24,7 @@ import java.util.stream.IntStream;
 public class SelectableAccountAdapter
         extends RecyclerView.Adapter<SelectableAccountAdapter.AccountHolder> {
     private List<Account> accounts = new ArrayList<>();
-    private Optional<String> selectedAccountName = Optional.empty();
+    private Optional<Long> selectedAccountId = Optional.empty();
     private int selectedPosition;
     private final Context context;
 
@@ -32,26 +32,26 @@ public class SelectableAccountAdapter
         this.context = context;
     }
 
-    public void setSelectedAccountName(String selectedAccountName) {
-        this.selectedAccountName = Optional.of(selectedAccountName);
+    public void setSelectedAccountId(long selectedAccountId) {
+        this.selectedAccountId = Optional.of(selectedAccountId);
     }
 
-    public String getSelectedAccountName() {
+    public long getSelectedAccountId() {
         return selectedPosition == RecyclerView.NO_POSITION ?
                 null :
-                accounts.get(selectedPosition).name;
+                accounts.get(selectedPosition).id;
     }
 
     public void setAccounts(List<Account> accounts) {
         this.accounts = accounts;
         notifyDataSetChanged();
 
-        if (selectedAccountName.isPresent()) {
+        if (selectedAccountId.isPresent()) {
             selectedPosition = IntStream.range(0, accounts.size())
-                    .filter(i -> accounts.get(i).name.equals(selectedAccountName.get()))
+                    .filter(i -> accounts.get(i).name.equals(selectedAccountId.get()))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("Account '"
-                            + selectedAccountName + "' is not in AccountAdapter.accounts"));
+                            + selectedAccountId + "' is not in AccountAdapter.accounts"));
         } else {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
             String accountName = sharedPref.getString("AccountName", accounts.get(0).name);

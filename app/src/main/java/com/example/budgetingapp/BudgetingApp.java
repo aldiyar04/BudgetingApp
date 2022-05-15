@@ -12,4 +12,8 @@ public class BudgetingApp extends Application {
     public static Executor getExecutor() {
         return executorService;
     }
+
+    public static ExecutorService getExecutorService() {
+        return executorService;
+    }
 }

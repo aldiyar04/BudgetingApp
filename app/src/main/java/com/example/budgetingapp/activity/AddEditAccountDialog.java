@@ -26,7 +26,7 @@ import com.example.budgetingapp.viewmodel.TransactionVM;
 public class AddEditAccountDialog extends Dialog {
     private final ComponentActivity parentActivity;
     private ActivityType activityType;
-    private String editedAccountName;
+    private Long editedAccountId;
 
     private DialogAddEditAccountBinding binding;
 
@@ -39,8 +39,8 @@ public class AddEditAccountDialog extends Dialog {
         this.activityType = activityType;
     }
 
-    public void setEditedAccountName(String editedAccountName) {
-        this.editedAccountName = editedAccountName;
+    public void setEditedAccountId(Long editedAccountId) {
+        this.editedAccountId = editedAccountId;
     }
 
     @Override
@@ -58,7 +58,7 @@ public class AddEditAccountDialog extends Dialog {
     private void initInputsIfActivityTypeEdit() {
         if (activityType == ActivityType.EDIT) {
             AccountVM accountVM = new ViewModelProvider(parentActivity).get(AccountVM.class);
-            Account editedAcc = accountVM.getAccountByName(editedAccountName);
+            Account editedAcc = accountVM.getAccountById(editedAccountId);
 
             binding.editTextName.setText(editedAcc.name);
             binding.editTextBalance.setText(String.valueOf(editedAcc.balance));
@@ -96,24 +96,20 @@ public class AddEditAccountDialog extends Dialog {
             long newAccBalance = Long.parseLong(newAccBalanceStr);
 
             if (activityType == ActivityType.ADD) {
-                db.runInTransaction(() -> {
-                    Account account = new Account(newAccName, newAccBalance);
-                    accountVM.save(account);
-
-                    createCorrectionTransaction(newAccName, newAccBalance);
-
-                    long netWorth = sharedPref.getLong("NetWorth", 0L);
-                    sharedPref.edit()
-                            .putLong("NetWorth", netWorth + newAccBalance)
-                            .apply();
-                });
+                Account account = new Account(newAccName, newAccBalance);
+                long accountId = accountVM.save(account);
+                createCorrectionTransaction(accountId, newAccBalance);
+                long netWorth = sharedPref.getLong("NetWorth", 0L);
+                sharedPref.edit()
+                        .putLong("NetWorth", netWorth + newAccBalance)
+                        .apply();
             } else if (activityType == ActivityType.EDIT) {
                 db.runInTransaction(() -> {
-                    Account editedAcc = accountVM.getAccountByName(editedAccountName);
+                    Account editedAcc = accountVM.getAccountById(editedAccountId);
                     long oldAccBalance = editedAcc.balance;
                     
                     long balanceDiff = newAccBalance - oldAccBalance;
-                    createCorrectionTransaction(newAccName, balanceDiff);
+                    createCorrectionTransaction(editedAccountId, balanceDiff);
 
                     editedAcc.name = newAccName;
                     editedAcc.balance = newAccBalance;
@@ -129,13 +125,13 @@ public class AddEditAccountDialog extends Dialog {
         });
     }
 
-    private void createCorrectionTransaction(String newAccName, long balanceDiff) {
+    private void createCorrectionTransaction(long newAccId, long balanceDiff) {
         TransactionVM txVM = new ViewModelProvider(parentActivity)
                 .get(TransactionVM.class);
 
         if (balanceDiff > 0) {
             Transaction correctionIncomeTx = Transaction.builder()
-                    .accountName(newAccName)
+                    .accountId(newAccId)
                     .categoryName(CategoryName.CORRECTION)
                     .type(TransactionType.INCOME)
                     .amount(balanceDiff)
@@ -143,7 +139,7 @@ public class AddEditAccountDialog extends Dialog {
             txVM.save(correctionIncomeTx);
         } else if (balanceDiff < 0) {
             Transaction correctionExpenseTx = Transaction.builder()
-                    .accountName(newAccName)
+                    .accountId(newAccId)
                     .categoryName(CategoryName.CORRECTION)
                     .type(TransactionType.EXPENSE)
                     .amount(-balanceDiff)

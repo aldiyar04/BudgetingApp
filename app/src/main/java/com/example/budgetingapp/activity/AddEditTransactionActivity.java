@@ -2,7 +2,6 @@ package com.example.budgetingapp.activity;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -103,7 +102,7 @@ public class AddEditTransactionActivity extends AppCompatActivity {
                 activityType == EXTRA_ACTIVITY_TYPE_EDIT_INCOME) {
             Transaction editedTx = getEditedTransaction();
             categoryRecyclerViewManager.setSelectedCategory(editedTx.categoryName);
-            accountRecyclerViewManager.setSelectedAccount(editedTx.accountName);
+            accountRecyclerViewManager.setSelectedAccount(editedTx.accountId);
             transactionAmountManager.setAmount(editedTx.amount);
         }
     }
@@ -120,28 +119,28 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         }
 
         CategoryName selectedCategoryName = categoryRecyclerViewManager.getSelectedCategoryName();
-        String selectedAccName = accountRecyclerViewManager.getSelectedAccountName();
+        long selectedAccId = accountRecyclerViewManager.getSelectedAccountId();
         long enteredAmount = transactionAmountManager.getAmount();
 
         int activityType = getIntent().getIntExtra(EXTRA_ACTIVITY_TYPE, -1);
         if (activityType == EXTRA_ACTIVITY_TYPE_ADD) {
-            saveTransactionAndUpdateBalances(selectedCategoryName, selectedAccName, enteredAmount);
+            saveTransactionAndUpdateBalances(selectedCategoryName, selectedAccId, enteredAmount);
         } else if (activityType == EXTRA_ACTIVITY_TYPE_EDIT_EXPENSE ||
                 activityType == EXTRA_ACTIVITY_TYPE_EDIT_INCOME) {
-            updateTransactionAndUpdateBalances(selectedCategoryName, selectedAccName, enteredAmount);
+            updateTransactionAndUpdateBalances(selectedCategoryName, selectedAccId, enteredAmount);
         }
 
         finish();
     }
 
     private void saveTransactionAndUpdateBalances(CategoryName categoryName,
-                                                  String accountName,
+                                                  long accountId,
                                                   long amount) {
         TransactionType txType = headerViewManager.getSelectedTransactionTypeFromSpinner();
 
         Transaction newTx = Transaction.builder()
                 .categoryName(categoryName)
-                .accountName(accountName)
+                .accountId(accountId)
                 .type(txType)
                 .amount(amount)
                 .build();
@@ -152,7 +151,7 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         BudgetingAppDatabase db = BudgetingAppDatabase.getInstance(AddEditTransactionActivity.this);
         db.runInTransaction(() -> {
             transactionVM.save(newTx);
-            Account account = accountVM.getAccountByName(accountName);
+            Account account = accountVM.getAccountById(accountId);
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
             long netWorth = sharedPref.getLong("NetWorth", 0L);
 
@@ -179,10 +178,10 @@ public class AddEditTransactionActivity extends AppCompatActivity {
     }
 
     private void updateTransactionAndUpdateBalances(CategoryName newCategoryName,
-                                                    String newAccountName,
+                                                    long newAccountId,
                                                     long newAmount) {
         Transaction editedTx = getEditedTransaction();
-        String oldAccountName = editedTx.accountName;
+        long oldAccountId = editedTx.accountId;
         long oldAmount = editedTx.amount;
 
         TransactionVM transactionVM = getTransactionVM();
@@ -190,8 +189,8 @@ public class AddEditTransactionActivity extends AppCompatActivity {
 
         BudgetingAppDatabase db = BudgetingAppDatabase.getInstance(AddEditTransactionActivity.this);
         db.runInTransaction(() -> {
-            Account oldAccount = accountVM.getAccountByName(oldAccountName);
-            Account newAccount = accountVM.getAccountByName(newAccountName);
+            Account oldAccount = accountVM.getAccountById(oldAccountId);
+            Account newAccount = accountVM.getAccountById(newAccountId);
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
             long netWorth = sharedPref.getLong("NetWorth", 0L);
 
@@ -217,7 +216,7 @@ public class AddEditTransactionActivity extends AppCompatActivity {
                     .apply();
 
             editedTx.categoryName = newCategoryName;
-            editedTx.accountName = newAccountName;
+            editedTx.accountId = newAccountId;
             editedTx.amount = newAmount;
 
             transactionVM.update(editedTx);
@@ -345,12 +344,12 @@ public class AddEditTransactionActivity extends AppCompatActivity {
                     .observe(AddEditTransactionActivity.this, accountAdapter::setAccounts);
         }
 
-        void setSelectedAccount(String accountName) {
-            accountAdapter.setSelectedAccountName(accountName);
+        void setSelectedAccount(long accountId) {
+            accountAdapter.setSelectedAccountId(accountId);
         }
 
-        String getSelectedAccountName() {
-            return accountAdapter.getSelectedAccountName();
+        long getSelectedAccountId() {
+            return accountAdapter.getSelectedAccountId();
         }
     }
 

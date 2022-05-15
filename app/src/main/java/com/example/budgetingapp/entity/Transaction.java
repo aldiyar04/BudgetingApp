@@ -13,7 +13,7 @@ public class Transaction {
     @PrimaryKey(autoGenerate = true)
     public Long id;
 
-    public String accountName;
+    public Long accountId;
 
     public CategoryName categoryName;
 
@@ -30,8 +30,8 @@ public class Transaction {
     public class Builder {
         private Builder() {}
 
-        public Builder accountName(String accountName) {
-            Transaction.this.accountName = accountName;
+        public Builder accountId(Long accountId) {
+            Transaction.this.accountId = accountId;
             return this;
         }
 
@@ -60,7 +60,7 @@ public class Transaction {
     public String toString() {
         return "Transaction{" +
                 "id=" + id +
-                ", accountName='" + accountName + '\'' +
+                ", accountId='" + accountId + '\'' +
                 ", categoryName='" + categoryName + '\'' +
                 ", type=" + type +
                 ", amount=" + amount +

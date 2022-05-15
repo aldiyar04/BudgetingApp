@@ -1,16 +1,18 @@
 package com.example.budgetingapp.entity;
 
-import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import java.text.NumberFormat;
 import java.util.Objects;
 
-@Entity
+@Entity(indices = {
+        @Index(value = {"name"}, unique = true)
+})
 public class Account {
-    @PrimaryKey
-    @NonNull
+    @PrimaryKey(autoGenerate = true)
+    public Long id;
+
     public String name;
 
     public Long balance;

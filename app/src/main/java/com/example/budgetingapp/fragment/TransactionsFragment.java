@@ -138,7 +138,7 @@ public class TransactionsFragment extends Fragment {
                 BudgetingAppDatabase.getInstance(getActivity());
         db.runInTransaction(() -> {
             txVM.delete(tx);
-            Account account = accountVM.getAccountByName(tx.accountName);
+            Account account = accountVM.getAccountById(tx.accountId);
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
             long netWorth = sharedPref.getLong("NetWorth", 0L);
 

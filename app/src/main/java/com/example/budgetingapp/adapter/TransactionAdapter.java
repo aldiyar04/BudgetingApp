@@ -1,21 +1,24 @@
 package com.example.budgetingapp.adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.activity.ComponentActivity;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.budgetingapp.R;
+import com.example.budgetingapp.entity.Account;
 import com.example.budgetingapp.entity.Transaction;
 import com.example.budgetingapp.entity.enums.TransactionType;
-import com.example.budgetingapp.helper.KztAmountFormatter;
 import com.example.budgetingapp.fragment.TransactionsFragment;
+import com.example.budgetingapp.helper.KztAmountFormatter;
+import com.example.budgetingapp.viewmodel.AccountVM;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -24,13 +27,15 @@ import java.util.List;
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionHolder> {
     private List<Transaction> transactions = new ArrayList<>();
     private final TransactionsFragment.TransactionOnClickCallback transactionOnClickCallback;
-    private final Context context;
+    private final ComponentActivity parentActivity;
     private final TextView noTransactionsTextView;
 
     public TransactionAdapter(TransactionsFragment.TransactionOnClickCallback
-                                      transactionOnClickCallback, Context context, TextView noTransactionsTextView) {
+                                      transactionOnClickCallback,
+                              ComponentActivity parentActivity,
+                              TextView noTransactionsTextView) {
         this.transactionOnClickCallback = transactionOnClickCallback;
-        this.context = context;
+        this.parentActivity = parentActivity;
         this.noTransactionsTextView = noTransactionsTextView;
     }
 
@@ -102,8 +107,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         }
 
         holder.textViewAmountSummary.setTextColor(color);
-
-        String fromAccount = prefix + tx.accountName;
+        String fromAccount = prefix + getAccountName(tx.accountId);
         holder.textViewAccount.setText(fromAccount);
     }
 
@@ -124,7 +128,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
     private int getColor(int colorID) {
-        return ContextCompat.getColor(TransactionAdapter.this.context, colorID);
+        return ContextCompat.getColor(TransactionAdapter.this.parentActivity, colorID);
+    }
+
+    private String getAccountName(long accountId) {
+        AccountVM accountVM = new ViewModelProvider(parentActivity).get(AccountVM.class);
+        return accountVM.getAccountById(accountId).name;
     }
 
     @Override

@@ -8,12 +8,14 @@ import android.widget.TextView;
 import androidx.activity.ComponentActivity;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.budgetingapp.R;
 import com.example.budgetingapp.activity.AddEditAccountDialog;
 import com.example.budgetingapp.entity.Account;
 import com.example.budgetingapp.helper.KztAmountFormatter;
+import com.example.budgetingapp.viewmodel.AccountVM;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +78,11 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountH
                 AddEditAccountDialog dialog =
                         new AddEditAccountDialog(AccountAdapter.this.parentActivity);
                 dialog.setActivityType(AddEditAccountDialog.ActivityType.EDIT);
-                dialog.setEditedAccountName(accountName.getText().toString());
+
+                AccountVM accountVM = new ViewModelProvider(parentActivity).get(AccountVM.class);
+                long accountId = accountVM.getAccountByName(accountName.getText().toString()).id;
+                dialog.setEditedAccountId(accountId);
+
                 dialog.show();
             });
         }
