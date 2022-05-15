@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.example.budgetingapp.R;
 import com.example.budgetingapp.databinding.ActivityBudgetsBinding;
@@ -18,6 +19,15 @@ public class BudgetsActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         initBottomNav();
+
+
+//        if (budgets.size() > 0) {
+//            binding.textViewNoBudgets.setVisibility(View.GONE);
+//            binding.buttonCreateFirstBudget.setVisibility(View.GONE);
+//        } else {
+//            binding.textViewNoBudgets.setVisibility(View.VISIBLE);
+//            binding.buttonCreateFirstBudget.setVisibility(View.VISIBLE);
+//        }
     }
 
     private void initBottomNav() {

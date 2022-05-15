@@ -117,32 +117,4 @@
             android:inputType="numberSigned" />
     </LinearLayout>
 
-    <!--    <Button-->
-<!--        android:id="@+id/buttonCancel"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="20dp"-->
-<!--        android:layout_weight="1"-->
-<!--        android:backgroundTint="#CA3769"-->
-<!--        android:text="Cancel"-->
-<!--        android:textSize="20sp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.233"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />-->
-
-<!--    <Button-->
-<!--        android:id="@+id/buttonOK"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="20dp"-->
-<!--        android:layout_weight="1"-->
-<!--        android:backgroundTint="#CA3769"-->
-<!--        android:text="OK"-->
-<!--        android:textSize="20sp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.789"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />-->
-
 </androidx.constraintlayout.widget.ConstraintLayout>

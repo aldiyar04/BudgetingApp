@@ -6,8 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".activity.ReportsActivity">
 
+    <FrameLayout
+        android:id="@+id/textViewHeader"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/metallic_seaweed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textViewBudgets"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Reports"
+            android:textColor="@color/white"
+            android:textSize="25sp" />
+    </FrameLayout>
+
     <TextView
-        android:id="@+id/textViewNetWorth"
+        android:id="@+id/textViewReports"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Reports"
