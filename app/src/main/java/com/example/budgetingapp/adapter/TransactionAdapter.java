@@ -21,6 +21,7 @@ import com.example.budgetingapp.helper.KztAmountFormatter;
 import com.example.budgetingapp.viewmodel.AccountVM;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,6 +119,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         } else if (tx.createdOn.plusDays(1L).equals(LocalDate.now())) {
             dateStr = "Yesterday";
         }
+        DateTimeFormatter dtf =  DateTimeFormatter.ofPattern("MMMM dd, yyyy");
+        dateStr = dtf.format(tx.createdOn);
         return dateStr;
     }
 

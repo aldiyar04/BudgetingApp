@@ -51,8 +51,10 @@ public abstract class BudgetingAppDatabase extends RoomDatabase {
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
             super.onCreate(db);
             BudgetingApp.getExecutor().execute(() -> {
-                AccountDao accountDao = BudgetingAppDatabase.INSTANCE.accountDao();
-                CategoryDao categoryDao = BudgetingAppDatabase.INSTANCE.categoryDao();
+                BudgetingAppDatabase appDb = BudgetingAppDatabase.INSTANCE;
+
+                AccountDao accountDao = appDb.accountDao();
+                CategoryDao categoryDao = appDb.categoryDao();
 
                 Account cashAcc = new Account("Cash", 0L);
                 Account bankCardAcc = new Account("Bank Card", 0L);
@@ -68,6 +70,10 @@ public abstract class BudgetingAppDatabase extends RoomDatabase {
                     }
                     categoryDao.insert(new Category(categoryName, TransactionType.INCOME));
                 });
+
+                BudgetDao budgetDao = appDb.budgetDao();
+                Budget mainBudget = Budget.createMainBudget(300_000L);
+                budgetDao.insert(mainBudget);
             });
         }
     };

@@ -16,7 +16,7 @@ public interface TransactionDao {
     @Query("SELECT * FROM `Transaction`")
     LiveData<List<Transaction>> findAll();
 
-    @Query("SELECT * FROM `Transaction` tx WHERE tx.id = :id")
+    @Query("SELECT * FROM `Transaction` tx WHERE id = :id")
     Transaction findByID(long id);
 
     @Insert

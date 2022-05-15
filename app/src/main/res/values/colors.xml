@@ -18,4 +18,7 @@
     <color name="dark_blue">#251D3A</color>
     <color name="secondary_blue">#325288</color>
     <color name="light_blue">#C4DDFF</color>
+    <color name="slate_blue">#FF7800</color>
+<!--    #519259 green-->
+    <color name="midnight_green">#6166B3</color>
 </resources>

@@ -20,6 +20,10 @@ public class Budget {
         this.spendingMax = spendingMax;
     }
 
+    public static Budget createMainBudget(Long spendingMax) {
+        return new Budget(null, spendingMax);
+    }
+
     @Override
     public String toString() {
         return "Budget{" +

@@ -197,8 +197,17 @@ public class AddEditTransactionActivity extends AppCompatActivity {
             long amountDiff = newAmount - oldAmount;
 
             if (newAccount.equals(oldAccount)) {
-                newAccount.balance += amountDiff;
+                if (editedTx.type == TransactionType.EXPENSE) {
+                    newAccount.balance -= amountDiff;
+                    netWorth -= amountDiff;
+                } else {
+                    newAccount.balance += amountDiff;
+                    netWorth += amountDiff;
+                }
                 accountVM.update(newAccount);
+                sharedPref.edit()
+                        .putLong("NetWorth", netWorth)
+                        .apply();
             } else {
                 if (editedTx.type == TransactionType.EXPENSE) {
                     newAccount.balance -= newAmount;
@@ -210,10 +219,6 @@ public class AddEditTransactionActivity extends AppCompatActivity {
                 accountVM.update(oldAccount);
                 accountVM.update(newAccount);
             }
-            netWorth += amountDiff;
-            sharedPref.edit()
-                    .putLong("NetWorth", netWorth)
-                    .apply();
 
             editedTx.categoryName = newCategoryName;
             editedTx.accountId = newAccountId;
@@ -438,6 +443,7 @@ public class AddEditTransactionActivity extends AppCompatActivity {
 
     public class TransactionAmountInputManager {
         private static final int MAX_NUMBER_LENGTH = 8;
+        private final
 
         void setNumpadButtonListeners() {
             setClearButtonListener();

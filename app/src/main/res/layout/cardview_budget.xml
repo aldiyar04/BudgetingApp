@@ -14,7 +14,7 @@
         android:layout_margin="20dp">
 
         <TextView
-            android:id="@+id/textViewBudgetTitle"
+            android:id="@+id/textViewMainBudgetTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Monthly 300,000 KZT"
@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textViewBudgetDates"
+            android:id="@+id/textViewMainBudgetDates"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -32,10 +32,10 @@
             android:text="May 1, 2022 - May 31, 2022"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewBudgetTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewMainBudgetTitle" />
 
         <TextView
-            android:id="@+id/textViewBudgetAmount"
+            android:id="@+id/textViewMainBudgetAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -44,7 +44,7 @@
             android:textSize="35sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewBudgetDates" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewMainBudgetDates" />
 
 
         <ProgressBar
@@ -57,7 +57,7 @@
             android:progressDrawable="@drawable/shape_progressbar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewBudgetTitle"
+            app:layout_constraintTop_toBottomOf="@+id/textViewMainBudgetTitle"
             app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

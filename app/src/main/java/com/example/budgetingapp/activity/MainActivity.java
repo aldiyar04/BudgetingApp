@@ -35,18 +35,6 @@ public class MainActivity extends AppCompatActivity {
         initObservingNetWorthPrefByHeaderView();
     }
 
-    public void initObservingNetWorthPrefByHeaderView() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        LongSharedPrefLiveData longSharedPrefLiveData = new LongSharedPrefLiveData(sharedPref,
-                "NetWorth", 0L);
-        longSharedPrefLiveData.observe(this, this::setNetWorthInHeaderView);
-    }
-
-    private void setNetWorthInHeaderView(long netWorth) {
-        String netWorthFormatted = KztAmountFormatter.format(netWorth);
-        binding.textViewNetWorth.setText("Net Worth: " + netWorthFormatted);
-    }
-
     private void initBottomNav() {
         binding.bottomNav.setSelectedItemId(R.id.accounting);
         setBottomNavListeners();
@@ -101,5 +89,17 @@ public class MainActivity extends AppCompatActivity {
                 .setReorderingAllowed(true)
                 .add(R.id.fragmentContainer, newFragmentClass, null)
                 .commit();
+    }
+
+    public void initObservingNetWorthPrefByHeaderView() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        LongSharedPrefLiveData longSharedPrefLiveData = new LongSharedPrefLiveData(sharedPref,
+                "NetWorth", 0L);
+        longSharedPrefLiveData.observe(this, this::setNetWorthInHeaderView);
+    }
+
+    private void setNetWorthInHeaderView(long netWorth) {
+        String netWorthFormatted = KztAmountFormatter.format(netWorth);
+        binding.textViewNetWorth.setText("Net Worth: " + netWorthFormatted);
     }
 }
