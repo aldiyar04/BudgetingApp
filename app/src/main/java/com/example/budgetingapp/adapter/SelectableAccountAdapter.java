@@ -48,7 +48,7 @@ public class SelectableAccountAdapter
 
         if (selectedAccountId.isPresent()) {
             selectedPosition = IntStream.range(0, accounts.size())
-                    .filter(i -> accounts.get(i).name.equals(selectedAccountId.get()))
+                    .filter(i -> accounts.get(i).id.equals(selectedAccountId.get()))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("Account '"
                             + selectedAccountId + "' is not in AccountAdapter.accounts"));

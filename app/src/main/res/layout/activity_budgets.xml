@@ -29,10 +29,13 @@
         android:id="@+id/budgetForAllExpenses"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        app:layout_constraintTop_toBottomOf="@+id/textViewHeader"
+        android:layout_marginVertical="20dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/textViewHeader">
 
         <TextView
             android:id="@+id/textViewBudgetTitle"
@@ -59,12 +62,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="35dp"
-            android:text="30,000 KZT"
+            android:text="70,000 KZT"
             android:textColor="@color/green"
             android:textSize="35sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textViewBudgetDates" />
+
         <TextView
             android:id="@+id/textViewBudgetMessage"
             android:layout_width="wrap_content"
@@ -73,8 +77,8 @@
             android:text="left to spent"
             android:textColor="@color/green"
             android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textViewBudgetAmount" />
 
         <ProgressBar
@@ -84,14 +88,36 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="35dp"
             android:layout_marginBottom="40dp"
-            android:progressDrawable="@drawable/shape_progressbar"
-            android:min="0"
             android:max="100"
+            android:min="0"
             android:progress="30"
+            android:progressDrawable="@drawable/shape_progressbar"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewBudgetMessage"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewBudgetMessage" />
+
+        <View
+            android:id="@+id/barToday"
+            android:layout_width="2.1dp"
+            android:layout_height="26dp"
+            android:background="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/progressBarMainBudget"
+            app:layout_constraintHorizontal_bias="0.5"/>
+
+        <TextView
+            android:id="@+id/textViewBudgetToday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="today"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@+id/barToday"
+            app:layout_constraintStart_toStartOf="@+id/barToday"
+            app:layout_constraintTop_toBottomOf="@+id/barToday" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
