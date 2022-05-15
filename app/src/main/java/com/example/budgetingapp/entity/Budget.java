@@ -1,9 +1,12 @@
 package com.example.budgetingapp.entity;
 
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity
+@Entity(indices = {
+        @Index(value = {"categoryName"}, unique = true)
+})
 public class Budget {
     @PrimaryKey(autoGenerate = true)
     public Long id;

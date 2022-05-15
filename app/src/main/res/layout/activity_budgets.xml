@@ -28,4 +28,6 @@
         app:itemTextColor="@drawable/selector"
         app:itemIconTint="@drawable/selector"
         app:menu="@menu/bottom_menu" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
