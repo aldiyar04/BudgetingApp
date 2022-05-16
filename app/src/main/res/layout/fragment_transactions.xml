@@ -19,7 +19,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="25dp"
         android:layout_marginBottom="80dp"
-        android:backgroundTint="@color/midnight_green"
+        android:backgroundTint="@color/medium_slate_blue"
         android:foreground="@drawable/ic_plus" />
 
     <TextView

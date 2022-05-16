@@ -20,7 +20,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="25dp"
         android:layout_marginBottom="80dp"
-        android:backgroundTint="@color/slate_blue"
+        android:backgroundTint="@color/orange"
         android:foreground="@drawable/ic_plus" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

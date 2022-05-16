@@ -1,23 +1,22 @@
 package com.example.budgetingapp.activity;
 
+import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.budgetingapp.R;
-import com.example.budgetingapp.adapter.TransactionAdapter;
 import com.example.budgetingapp.databinding.ActivityBudgetsBinding;
 import com.example.budgetingapp.entity.Budget;
 import com.example.budgetingapp.helper.KztAmountFormatter;
 import com.example.budgetingapp.viewmodel.BudgetVM;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 
@@ -77,16 +76,20 @@ public class BudgetsActivity extends AppCompatActivity {
             binding.mainBudget.setVisibility(View.GONE);
             return;
         }
-        binding.mainBudget.setVisibility(View.VISIBLE);
 
         String spendingMaxFormatted = KztAmountFormatter.format(mainBudget.spendingMax);
         binding.textViewMainBudgetTitle.setText("Monthly " + spendingMaxFormatted);
         setMainBudgetDatesTextView();
 
-        setMainBudgetAmountSpentAndProgress(mainBudget.spendingMax);
-        binding.textViewMainBudgetMessage.setText("left to spend");
+        getBudgetVM().getAmountSpentForLastMonth().observe(this, amountSpent -> {
+            setMainBudgetAmountMessage(mainBudget.spendingMax, amountSpent);
+            setBudgetSpentProgress(binding.progressBarMainBudget,
+                    mainBudget.spendingMax, amountSpent);
+        });
 
         setHorizontalBiasForTodayBarAndTextView();
+
+        binding.mainBudget.setVisibility(View.VISIBLE);
     }
 
     private void setMainBudgetDatesTextView() {
@@ -108,51 +111,89 @@ public class BudgetsActivity extends AppCompatActivity {
         return firstDayOfCurrentMonth.plusMonths(1).minusDays(1);
     }
 
-    private void setMainBudgetAmountSpentAndProgress(long mainBudgetSpendingMax) {
-        getBudgetVM().getAmountSpentForLastMonth().observe(this, amountSpent -> {
-            if (amountSpent == null) {
-                amountSpent = 0L;
-            }
-            long leftToSpend = mainBudgetSpendingMax - amountSpent;
-            if (leftToSpend < 0) {
-                leftToSpend = 0;
-                binding.textViewMainBudgetAmount.setTextColor(getColor(R.color.red));
-                binding.textViewMainBudgetMessage.setTextColor(getColor(R.color.red));
-            }
+    private void setMainBudgetAmountMessage(Long spendingMax, Long amountSpent) {
+        if (amountSpent == null) {
+            amountSpent = 0L;
+        }
+        long leftToSpend = spendingMax - amountSpent;
+        if (leftToSpend < 0) {
+            long overspent = -leftToSpend;
+
+            String overspentFormatted = KztAmountFormatter.format(overspent);
+            binding.textViewMainBudgetAmount.setText(overspentFormatted);
+
+            String overspentMessage = getOverspentMessage(overspent, spendingMax);
+            binding.textViewMainBudgetMessage.setText(overspentMessage);
+
+            setColorOnMainBudgetAmountMessage(getColor(R.color.red));
+        } else {
             String leftToSpendFormatted = KztAmountFormatter.format(leftToSpend);
             binding.textViewMainBudgetAmount.setText(leftToSpendFormatted);
+            binding.textViewMainBudgetMessage.setText("left to spend");
 
-            int progress = (int) ((double) amountSpent / mainBudgetSpendingMax * 100);
-            binding.progressBarMainBudget.setProgress(progress);
-            binding.progressBarMainBudget.setMax(100);
-        });
+            if (leftToSpend > 0) {
+                setColorOnMainBudgetAmountMessage(getColor(R.color.green));
+            } else {
+                setColorOnMainBudgetAmountMessage(getColor(R.color.red));
+            }
+        }
+    }
+
+    private String getOverspentMessage(long overspent, long spendingMax) {
+        String message = "overspent";
+        if (overspent >= spendingMax) {
+            int overspentByPercentage = (int) ((double) overspent / spendingMax * 100);
+            message += " (by " + overspentByPercentage + "%)";
+        }
+        return message;
+    }
+
+    private void setColorOnMainBudgetAmountMessage(@ColorInt int color) {
+        binding.textViewMainBudgetAmount.setTextColor(color);
+        binding.textViewMainBudgetMessage.setTextColor(color);
+    }
+
+    private void setBudgetSpentProgress(ProgressBar spentProgressBar,
+                                        Long spendingMax, Long amountSpent) {
+        Long progressRemainder = amountSpent % spendingMax;
+        progressRemainder = (progressRemainder == 0 || amountSpent > spendingMax) ?
+                spendingMax : progressRemainder;
+
+        if (spendingMax > Integer.MAX_VALUE || amountSpent > Integer.MAX_VALUE) {
+            int progress = (int) ((double) progressRemainder / spendingMax * Integer.MAX_VALUE);
+            spentProgressBar.setMax(Integer.MAX_VALUE);
+            spentProgressBar.setProgress(progress);
+        } else {
+            spentProgressBar.setMax(spendingMax.intValue() );
+            spentProgressBar.setProgress(progressRemainder.intValue());
+        }
     }
 
     private void setHorizontalBiasForTodayBarAndTextView() {
         float dayOfMonthPercent = (float) getCurrentDayOfMonth() / getNumDaysInCurrentMonth();
         setHorizontalBiasForView(binding.barMainBudgetToday, dayOfMonthPercent);
 
-//        float todayTextHorizBias = 0.5f;
-//        if (dayOfMonthPercent < 0.06) {
-//            todayTextHorizBias = 0;
-//        } else if (dayOfMonthPercent > 0.94) {
-//            todayTextHorizBias = 1;
-//        }
-//        setHorizontalBiasForView(binding.textViewMainBudgetToday, todayTextHorizBias);
+        float todayTextHorizBias = 0.5f;
+        if (dayOfMonthPercent < 0.06) {
+            todayTextHorizBias = 0;
+        } else if (dayOfMonthPercent > 0.94) {
+            todayTextHorizBias = 1;
+        }
+        setHorizontalBiasForView(binding.textViewMainBudgetToday, todayTextHorizBias);
     }
 
     private int getCurrentDayOfMonth() {
         return LocalDate.now().getDayOfMonth();
     }
 
+    private int getNumDaysInCurrentMonth() {
+        return YearMonth.now().lengthOfMonth();
+    }
+
     private void setHorizontalBiasForView(View view, float horizontalBias) {
         ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams)
                 view.getLayoutParams();
         params.horizontalBias = horizontalBias;
-        binding.textViewMainBudgetToday.setLayoutParams(params);
-    }
-
-    private int getNumDaysInCurrentMonth() {
-        return YearMonth.now().lengthOfMonth();
+        view.setLayoutParams(params);
     }
 }
