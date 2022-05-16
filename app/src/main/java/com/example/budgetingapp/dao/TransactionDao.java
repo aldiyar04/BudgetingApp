@@ -13,7 +13,7 @@ import java.util.List;
 
 @Dao
 public interface TransactionDao {
-    @Query("SELECT * FROM `Transaction`")
+    @Query("SELECT * FROM `Transaction` where categoryName != 'CORRECTION'")
     LiveData<List<Transaction>> findAll();
 
     @Query("SELECT * FROM `Transaction` tx WHERE id = :id")

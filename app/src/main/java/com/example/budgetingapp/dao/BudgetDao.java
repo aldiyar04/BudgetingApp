@@ -24,14 +24,8 @@ public interface BudgetDao {
     Budget findMainBudget();
 
     @Transaction
-    @Query("SELECT * FROM Category") // Relations (such as BudgetAndCategory) must be queried from the parent entity.
-        // Category is the parent entity, because Budget has a foreign key that references Category.
-    LiveData<List<CategoryAndBudget>> findCategoryBudgetsLiveData();
-
-    @Transaction
-    @Query("SELECT * FROM Category") // Relations (such as BudgetAndCategory) must be queried from the parent entity.
-        // Category is the parent entity, because Budget has a foreign key that references Category.
-    List<CategoryAndBudget> findCategoryBudgets();
+    @Query("SELECT * FROM Budget where categoryName is not null")
+    LiveData<List<Budget>> findCategoryBudgetsLiveData();
 
     @Query("SELECT * FROM Budget WHERE id = :id")
     Budget findById(long id);

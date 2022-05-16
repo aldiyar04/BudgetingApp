@@ -1,19 +1,20 @@
 package com.example.budgetingapp.activity;
 
-import androidx.annotation.ColorInt;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import androidx.annotation.ColorInt;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.example.budgetingapp.R;
+import com.example.budgetingapp.adapter.BudgetAdapter;
 import com.example.budgetingapp.databinding.ActivityBudgetsBinding;
 import com.example.budgetingapp.entity.Budget;
-import com.example.budgetingapp.entity.Transaction;
 import com.example.budgetingapp.helper.KztAmountFormatter;
 import com.example.budgetingapp.viewmodel.BudgetVM;
 
@@ -32,9 +33,9 @@ public class BudgetsActivity extends AppCompatActivity {
 
         initBottomNav();
         initObservingMainBudgetByView();
-
         setCreateMainBudgetOnClickListener();
         setAddBudgetOnClickListener();
+        initBudgetRecyclerView();
     }
 
     private void setCreateMainBudgetOnClickListener() {
@@ -236,6 +237,30 @@ public class BudgetsActivity extends AppCompatActivity {
                 view.getLayoutParams();
         params.horizontalBias = horizontalBias;
         view.setLayoutParams(params);
+    }
+
+    private void initBudgetRecyclerView() {
+        BudgetVM budgetVM = getBudgetVM();
+        BudgetOnClickCallback budgetOnClickCallback = this::startEditBudgetActivity;
+        BudgetAdapter budgetAdapter = new BudgetAdapter(budgetOnClickCallback, this,
+                binding.cardViewRemainingCategories);
+        budgetVM.getCategoryBudgetsLiveData().observe(this, budgetAdapter::setBudgets);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, true);
+        layoutManager.setStackFromEnd(true);
+        binding.recyclerViewBudgets.setLayoutManager(layoutManager);
+        binding.recyclerViewBudgets.setHasFixedSize(true);
+        binding.recyclerViewBudgets.setNestedScrollingEnabled(false);
+        binding.recyclerViewBudgets.setAdapter(budgetAdapter);
+    }
+
+    private void startEditBudgetActivity(Budget budget) {
+        Intent intent = new Intent(BudgetsActivity.this, AddEditBudgetActivity.class);
+        intent.putExtra(AddEditBudgetActivity.EXTRA_ACTIVITY_TYPE,
+                AddEditBudgetActivity.EXTRA_ACTIVITY_TYPE_EDIT_BUDGET);
+        intent.putExtra(AddEditBudgetActivity.EXTRA_EDITED_BUDGET_ID, budget.id);
+        startActivity(intent);
     }
 
     public interface BudgetOnClickCallback {

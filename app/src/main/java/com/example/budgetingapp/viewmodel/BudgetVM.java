@@ -19,7 +19,7 @@ import java.util.concurrent.Executor;
 public class BudgetVM extends AndroidViewModel {
     private final BudgetDao budgetDao;
     private final LiveData<Budget> mainBudget;
-    private final LiveData<List<CategoryAndBudget>> categoryBudgets;
+    private final LiveData<List<Budget>> categoryBudgets;
     private final Executor executor;
 
     public BudgetVM(@NonNull Application application) {
@@ -38,12 +38,8 @@ public class BudgetVM extends AndroidViewModel {
         return budgetDao.findMainBudget();
     }
 
-    public LiveData<List<CategoryAndBudget>> getCategoryBudgetsLiveData() {
+    public LiveData<List<Budget>> getCategoryBudgetsLiveData() {
         return categoryBudgets;
-    }
-
-    public List<CategoryAndBudget> getCategoryBudgets() {
-        return budgetDao.findCategoryBudgets();
     }
 
     public Budget getById(long id) {

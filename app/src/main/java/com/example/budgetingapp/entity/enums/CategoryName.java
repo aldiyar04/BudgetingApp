@@ -18,7 +18,7 @@ public enum CategoryName {
     SCHOLARSHIP("Scholarship"),
 
     // Both for expenses and income
-    CORRECTION("Correction"), // Only to be specified by the app itself
+    CORRECTION("Correction"), // Only to be used by the app itself
     OTHER("Other"),
 
     // Special value for budgets, not saved to DB
@@ -33,30 +33,38 @@ public enum CategoryName {
     public static CategoryName[] getCategoriesOfType(TransactionType type) {
         switch (type) {
             case EXPENSE:
-                return getExpenseCategories();
+                return getExpenseCategoriesForUser();
             case INCOME:
-                return getIncomeCategories();
+                return getIncomeCategoriesForUser();
         }
         throw new IllegalStateException("There can only be transactions of types '" +
                 TransactionType.EXPENSE + "' or '" + TransactionType.INCOME + "'");
     }
 
-    public static CategoryName[] getExpenseCategories() {
+    public static CategoryName[] getExpenseCategoriesForUser() {
         return new CategoryName[]{BILLS, FOOD_AND_DRINKS, CLOTHING_AND_FOOTWEAR, TRANSPORTATION,
-        HEALTH_AND_PERSONAL_CARE, HOME_AND_UTILITIES, EDUCATION, SPORTS, GIFTS, LEISURE,
-                CORRECTION, OTHER};
+        HEALTH_AND_PERSONAL_CARE, HOME_AND_UTILITIES, EDUCATION, SPORTS, GIFTS, LEISURE, OTHER};
     }
 
-    public static CategoryName[] getIncomeCategories() {
-        return new CategoryName[]{SALARY, SCHOLARSHIP, CORRECTION, OTHER};
+    public static CategoryName[] getIncomeCategoriesForUser() {
+        return new CategoryName[]{SALARY, SCHOLARSHIP, OTHER};
+    }
+
+    public static CategoryName[] getExpenseOnlyCategories() {
+        return new CategoryName[]{BILLS, FOOD_AND_DRINKS, CLOTHING_AND_FOOTWEAR, TRANSPORTATION,
+                HEALTH_AND_PERSONAL_CARE, HOME_AND_UTILITIES, EDUCATION, SPORTS, GIFTS, LEISURE};
+    }
+
+    public static CategoryName[] getIncomeOnlyCategories() {
+        return new CategoryName[]{SALARY, SCHOLARSHIP};
+    }
+
+    public static CategoryName[] getCategoriesBothForIncomeAndExpenses() {
+        return new CategoryName[]{CORRECTION, OTHER};
     }
 
     public boolean isBothForExpensesAndIncome() {
         return this == CORRECTION || this == OTHER;
-    }
-
-    public boolean isNonPersistent() {
-        return this == REMAINING_CATEGORIES;
     }
 
     @Override

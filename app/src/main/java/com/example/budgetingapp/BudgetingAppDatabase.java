@@ -1,7 +1,6 @@
 package com.example.budgetingapp;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
@@ -61,14 +60,15 @@ public abstract class BudgetingAppDatabase extends RoomDatabase {
                 accountDao.insert(cashAcc);
                 accountDao.insert(bankCardAcc);
 
-                Arrays.stream(CategoryName.getExpenseCategories()).forEach(categoryName -> {
+                Arrays.stream(CategoryName.getExpenseOnlyCategories()).forEach(categoryName -> {
                     categoryDao.insert(new Category(categoryName, TransactionType.EXPENSE));
                 });
-                Arrays.stream(CategoryName.getIncomeCategories()).forEach(categoryName -> {
-                    if (categoryName.isBothForExpensesAndIncome()) {
-                        return;
-                    }
+                Arrays.stream(CategoryName.getIncomeOnlyCategories()).forEach(categoryName -> {
                     categoryDao.insert(new Category(categoryName, TransactionType.INCOME));
+                });
+                Arrays.stream(CategoryName.getCategoriesBothForIncomeAndExpenses())
+                        .forEach(categoryName -> {
+                    categoryDao.insert(Category.bothForIncomeAndExpenses(categoryName));
                 });
 
 //                BudgetDao budgetDao = appDb.budgetDao();

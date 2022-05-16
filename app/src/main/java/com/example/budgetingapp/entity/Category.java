@@ -20,6 +20,14 @@ public class Category {
         this.type = type;
     }
 
+    public static Category bothForIncomeAndExpenses(CategoryName categoryName) {
+        if (!categoryName.isBothForExpensesAndIncome()) {
+            throw new IllegalArgumentException("Category '" + categoryName +
+                    "' is not both for income and expenses");
+        }
+        return new Category(categoryName, null);
+    }
+
     @Override
     public String toString() {
         return "Category{" +
