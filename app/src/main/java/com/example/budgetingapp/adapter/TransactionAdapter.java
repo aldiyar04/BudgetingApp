@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.budgetingapp.R;
 import com.example.budgetingapp.entity.Account;
 import com.example.budgetingapp.entity.Transaction;
+import com.example.budgetingapp.entity.enums.CategoryName;
 import com.example.budgetingapp.entity.enums.TransactionType;
 import com.example.budgetingapp.fragment.TransactionsFragment;
 import com.example.budgetingapp.helper.KztAmountFormatter;
@@ -71,9 +72,11 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     public void onBindViewHolder(@NonNull TransactionHolder holder, int position) {
         initHolderFields(holder, position);
         Transaction tx = transactions.get(position);
-        holder.itemView.setOnClickListener(view ->
-                transactionOnClickCallback.handle(holder.itemView, tx)
-        );
+        if (tx.categoryName != CategoryName.CORRECTION) {
+            holder.itemView.setOnClickListener(view ->
+                    transactionOnClickCallback.handle(holder.itemView, tx)
+            );
+        }
         holder.itemView.setOnLongClickListener(view ->
                 transactionOnLongClickCallback.handle(holder.itemView, tx)
         );

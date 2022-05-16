@@ -1,5 +1,7 @@
 package com.example.budgetingapp.entity.enums;
 
+import java.nio.charset.CoderResult;
+
 public enum CategoryName {
     // Expense categories:
     BILLS("Bills"),

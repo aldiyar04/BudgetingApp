@@ -5,11 +5,13 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.example.budgetingapp.BudgetingApp;
 import com.example.budgetingapp.BudgetingAppDatabase;
 import com.example.budgetingapp.dao.TransactionDao;
 import com.example.budgetingapp.entity.Transaction;
+import com.example.budgetingapp.entity.pojo.CategoryExpense;
 
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -32,6 +34,24 @@ public class TransactionVM extends AndroidViewModel {
 
     public Transaction getByID(long id) {
         return transactionDao.findByID(id);
+    }
+
+    public LiveData<List<CategoryExpense>> getExpensesByCategoriesForAllTime() {
+        String queryStr = "select categoryName as categoryName, sum(amount) as expenseAmount " +
+                "from `Transaction` " +
+                "where type='EXPENSE' " +
+                "group by categoryName";
+        SimpleSQLiteQuery query = new SimpleSQLiteQuery(queryStr);
+        return transactionDao.getExpensesByCategoriesForAllTime(query);
+    }
+
+    public LiveData<List<CategoryExpense>> getExpensesByCategoriesForLastMonth() {
+        String queryStr = "select categoryName as categoryName, sum(amount) as expenseAmount " +
+                "from `Transaction` " +
+                "where type='EXPENSE' and date('now','start of month') <= createdOn " +
+                "group by categoryName";
+        SimpleSQLiteQuery query = new SimpleSQLiteQuery(queryStr);
+        return transactionDao.getExpensesByCategoriesForLastMonth(query);
     }
 
     public void save(Transaction transaction) {

@@ -1,4 +1,4 @@
-package com.example.budgetingapp.activity;
+package com.example.budgetingapp.dialog;
 
 import android.app.Dialog;
 import android.content.Context;

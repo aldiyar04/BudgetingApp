@@ -40,6 +40,9 @@ dependencies {
 //    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 //    kapt "com.google.dagger:hilt-compiler:2.38.1"
 
+//    Chart library
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
 //    ViewModel and LiveData
     implementation  "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation "androidx.lifecycle:lifecycle-common-java8:2.4.1"

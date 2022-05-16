@@ -6,5 +6,5 @@
     android:textSize="20sp"
     android:gravity="center"
     android:backgroundTint="@color/secondary_blue"
-    android:textColor="@color/black"
+    android:textColor="@color/metallic_seaweed"
     android:padding="5dip" />

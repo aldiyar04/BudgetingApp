@@ -11,13 +11,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BudgetingApp">
         <activity
-            android:name=".activity.ConfirmDialog"
+            android:name=".dialog.ConfirmDialog"
             android:exported="false" />
         <activity
             android:name=".activity.AddEditBudgetActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.AddEditAccountDialog"
+            android:name=".dialog.AddEditAccountDialog"
             android:exported="false" />
         <activity
             android:name=".activity.AddEditTransactionActivity"

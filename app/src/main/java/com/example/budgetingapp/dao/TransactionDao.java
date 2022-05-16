@@ -5,9 +5,12 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.RawQuery;
 import androidx.room.Update;
+import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.example.budgetingapp.entity.Transaction;
+import com.example.budgetingapp.entity.pojo.CategoryExpense;
 
 import java.util.List;
 
@@ -18,6 +21,12 @@ public interface TransactionDao {
 
     @Query("SELECT * FROM `Transaction` tx WHERE id = :id")
     Transaction findByID(long id);
+
+    @RawQuery(observedEntities = Transaction.class)
+    LiveData<List<CategoryExpense>> getExpensesByCategoriesForAllTime(SupportSQLiteQuery query);
+
+    @RawQuery(observedEntities = Transaction.class)
+    LiveData<List<CategoryExpense>> getExpensesByCategoriesForLastMonth(SupportSQLiteQuery query);
 
     @Insert
     void insert(Transaction transaction);
