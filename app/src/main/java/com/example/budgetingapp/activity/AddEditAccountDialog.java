@@ -96,6 +96,11 @@ public class AddEditAccountDialog extends Dialog {
             long newAccBalance = Long.parseLong(newAccBalanceStr);
 
             if (activityType == ActivityType.ADD) {
+                if (accountVM.getAccountByName(newAccName) != null) {
+                    String msg = "Account \"" + newAccName + "\" already exists";
+                    Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Account account = new Account(newAccName, newAccBalance);
                 long accountId = accountVM.save(account);
                 createCorrectionTransaction(accountId, newAccBalance);

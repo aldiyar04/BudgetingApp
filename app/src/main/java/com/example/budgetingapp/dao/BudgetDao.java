@@ -30,6 +30,9 @@ public interface BudgetDao {
     @Query("SELECT * FROM Budget WHERE id = :id")
     Budget findById(long id);
 
+    @Query("SELECT * FROM Budget WHERE categoryName = :categoryName")
+    Budget findBudgetByCategoryName(CategoryName categoryName);
+
     @Query("select sum(amount) from `Transaction` where type='EXPENSE' " +
             "and date('now','start of month') <= createdOn")
     LiveData<Long> getAmountSpentForLastMonth();

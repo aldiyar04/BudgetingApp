@@ -46,6 +46,10 @@ public class BudgetVM extends AndroidViewModel {
         return budgetDao.findById(id);
     }
 
+    public Budget getBudgetByCategoryName(CategoryName categoryName) {
+        return budgetDao.findBudgetByCategoryName(categoryName);
+    }
+
     public LiveData<Long> getAmountSpentForLastMonth() {
         return budgetDao.getAmountSpentForLastMonth();
     }
