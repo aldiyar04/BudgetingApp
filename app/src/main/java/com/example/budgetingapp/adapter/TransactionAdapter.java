@@ -113,15 +113,14 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
     private String getDateString(Transaction tx) {
-        String dateStr;
+        String dateStr = tx.createdOn.toString();
         if (tx.createdOn.equals(LocalDate.now())) {
             dateStr = "Today";
         } else if (tx.createdOn.plusDays(1L).equals(LocalDate.now())) {
             dateStr = "Yesterday";
-        } else {
-            DateTimeFormatter dtf =  DateTimeFormatter.ofPattern("MMMM dd, yyyy");
-            dateStr = dtf.format(tx.createdOn);
         }
+        DateTimeFormatter dtf =  DateTimeFormatter.ofPattern("MMMM dd, yyyy");
+        dateStr = dtf.format(tx.createdOn);
         return dateStr;
     }
 

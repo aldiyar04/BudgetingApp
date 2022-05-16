@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.budgetingapp.R;
-import com.example.budgetingapp.dialog.AddEditAccountDialog;
+import com.example.budgetingapp.activity.AddEditAccountDialog;
 import com.example.budgetingapp.entity.Account;
 import com.example.budgetingapp.helper.KztAmountFormatter;
 import com.example.budgetingapp.viewmodel.AccountVM;

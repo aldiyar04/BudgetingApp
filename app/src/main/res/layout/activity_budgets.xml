@@ -37,7 +37,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="120dp"
+            android:paddingBottom="100dp"
             tools:context=".activity.BudgetsActivity">
 
             <androidx.constraintlayout.widget.ConstraintLayout

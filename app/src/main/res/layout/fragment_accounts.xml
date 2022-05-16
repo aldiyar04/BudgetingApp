@@ -10,9 +10,7 @@
         android:id="@+id/accountRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="560dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="120dp"
-        android:clipToPadding="false"
+        android:paddingVertical="10dp"
         tools:listitem="@layout/cardview_account"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

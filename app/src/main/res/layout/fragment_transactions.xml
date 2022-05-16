@@ -10,9 +10,7 @@
         android:id="@+id/txRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="560dp"
-        android:paddingBottom="120dp"
-        android:clipToPadding="false"
-        tools:listitem="@layout/cardview_transaction" />
+        tools:listitem="@layout/cardview_transaction"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonAddTransaction"

@@ -1,4 +1,4 @@
-package com.example.budgetingapp.dialog;
+package com.example.budgetingapp.activity;
 
 import android.app.Dialog;
 import android.content.SharedPreferences;
