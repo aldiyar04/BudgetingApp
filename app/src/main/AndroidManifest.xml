@@ -14,7 +14,7 @@
             android:name=".activity.AddEditBudgetActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.AddEditAccountDialog"
+            android:name=".dialog.AddEditAccountDialog"
             android:exported="false" />
         <activity
             android:name=".activity.AddEditTransactionActivity"
