@@ -26,12 +26,12 @@ public interface BudgetDao {
     LiveData<List<CategoryAndBudget>> findCategoryBudgets();
 
     @Query("select sum(amount) from `Transaction` where type='EXPENSE' " +
-            "and :monthFirstDay <= createdOn")
-    LiveData<Long> getAmountSpentForLastMonth(LocalDate monthFirstDay);
+            "and date('now','start of month') <= createdOn")
+    LiveData<Long> getAmountSpentForLastMonth();
 
     @Query("select sum(amount) from `Transaction` where type='EXPENSE' " +
-            "and :monthFirstDay <= createdOn and categoryName = :categoryName")
-    LiveData<Long> getAmountSpentForLastMonth(LocalDate monthFirstDay, CategoryName categoryName);
+            "and date('now','start of month') <= createdOn and categoryName = :categoryName")
+    LiveData<Long> getAmountSpentForLastMonth(CategoryName categoryName);
 
     @Insert
     void insert(Budget budget);

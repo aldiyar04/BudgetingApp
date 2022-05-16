@@ -40,17 +40,11 @@ public class BudgetVM extends AndroidViewModel {
     }
 
     public LiveData<Long> getAmountSpentForLastMonth() {
-        return budgetDao.getAmountSpentForLastMonth(getFirstDayOfCurrentMonth());
+        return budgetDao.getAmountSpentForLastMonth();
     }
 
     public LiveData<Long> getAmountSpentForLastMonth(CategoryName categoryName) {
-        return budgetDao.getAmountSpentForLastMonth(getFirstDayOfCurrentMonth(),
-                categoryName);
-    }
-
-    private LocalDate getFirstDayOfCurrentMonth() {
-        LocalDate todayDate = LocalDate.now();
-        return todayDate.withDayOfMonth(1);
+        return budgetDao.getAmountSpentForLastMonth(categoryName);
     }
 
     public void save(Budget budget) {
