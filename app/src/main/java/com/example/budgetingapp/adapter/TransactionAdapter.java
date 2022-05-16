@@ -29,8 +29,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     private final ComponentActivity parentActivity;
     private final TextView noTransactionsTextView;
 
-    private TransactionsFragment.TransactionCallback transactionOnClickCallback;
-    private TransactionsFragment.TransactionCallback transactionOnLongClickCallback;
+    private TransactionsFragment.TransactionViewCallback transactionOnClickCallback;
+    private TransactionsFragment.TransactionViewCallback transactionOnLongClickCallback;
 
     public TransactionAdapter(ComponentActivity parentActivity,
                               TextView noTransactionsTextView) {
@@ -38,12 +38,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         this.noTransactionsTextView = noTransactionsTextView;
     }
 
-    public void setTransactionOnClickCallback(TransactionsFragment.TransactionCallback
+    public void setTransactionOnClickCallback(TransactionsFragment.TransactionViewCallback
                                                       transactionOnClickCallback) {
         this.transactionOnClickCallback = transactionOnClickCallback;
     }
 
-    public void setTransactionOnLongClickCallback(TransactionsFragment.TransactionCallback
+    public void setTransactionOnLongClickCallback(TransactionsFragment.TransactionViewCallback
                                                           transactionOnLongClickCallback) {
         this.transactionOnLongClickCallback = transactionOnLongClickCallback;
     }
@@ -69,19 +69,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     @Override
     public void onBindViewHolder(@NonNull TransactionHolder holder, int position) {
         initHolderFields(holder, position);
-        setOnClickListener(holder, position);
-        setOnLongClickListener(holder, position);
-    }
-
-    private void setOnClickListener(TransactionHolder holder, int position) {
         Transaction tx = transactions.get(position);
         holder.itemView.setOnClickListener(view ->
                 transactionOnClickCallback.handle(holder.itemView, tx)
         );
-    }
-
-    private void setOnLongClickListener(TransactionHolder holder, int position) {
-        Transaction tx = transactions.get(position);
         holder.itemView.setOnLongClickListener(view ->
                 transactionOnLongClickCallback.handle(holder.itemView, tx)
         );

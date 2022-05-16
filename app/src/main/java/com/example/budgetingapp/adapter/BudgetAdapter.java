@@ -26,16 +26,25 @@ import java.util.List;
 
 public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.BudgetHolder> {
     private List<Budget> budgets = new ArrayList<>();
-    private final BudgetsActivity.BudgetOnClickCallback budgetOnClickCallback;
     private final ComponentActivity parentActivity;
     private final View viewRemainingCategories;
 
-    public BudgetAdapter(BudgetsActivity.BudgetOnClickCallback budgetOnClickCallback,
-                         ComponentActivity parentActivity,
+    private BudgetsActivity.BudgetViewCallback budgetOnClickCallback;
+    private BudgetsActivity.BudgetViewCallback budgetOnLongClickCallback;
+
+    public BudgetAdapter(
+            ComponentActivity parentActivity,
                          View viewRemainingCategories) {
-        this.budgetOnClickCallback = budgetOnClickCallback;
         this.parentActivity = parentActivity;
         this.viewRemainingCategories = viewRemainingCategories;
+    }
+
+    public void setBudgetOnClickCallback(BudgetsActivity.BudgetViewCallback budgetOnClickCallback) {
+        this.budgetOnClickCallback = budgetOnClickCallback;
+    }
+
+    public void setBudgetOnLongClickCallback(BudgetsActivity.BudgetViewCallback budgetOnLongClickCallback) {
+        this.budgetOnLongClickCallback = budgetOnLongClickCallback;
     }
 
     public void setBudgets(List<Budget> budgets) {
@@ -65,12 +74,13 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.BudgetHold
     @Override
     public void onBindViewHolder(@NonNull BudgetHolder holder, int position) {
         initHolderFields(holder, position);
-        setEditBudgetOnClick(holder, position);
-    }
-
-    private void setEditBudgetOnClick(BudgetHolder holder, int position) {
         Budget budget = budgets.get(position);
-        holder.itemView.setOnClickListener(view -> budgetOnClickCallback.onClick(budget));
+        holder.itemView.setOnClickListener(view -> {
+            budgetOnClickCallback.handle(holder.itemView, budget);
+        });
+        holder.itemView.setOnLongClickListener(view ->
+                budgetOnLongClickCallback.handle(holder.itemView, budget)
+        );
     }
 
     private void initHolderFields(BudgetHolder holder, int position) {

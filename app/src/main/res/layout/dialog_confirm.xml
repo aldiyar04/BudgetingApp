@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:minWidth="275dp"
     android:padding="25dp"
     tools:context=".activity.ConfirmDialog">
 

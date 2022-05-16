@@ -152,7 +152,7 @@ public class TransactionsFragment extends Fragment {
         });
     }
 
-    public interface TransactionCallback {
+    public interface TransactionViewCallback {
         boolean handle(View view, Transaction transaction);
     }
 }

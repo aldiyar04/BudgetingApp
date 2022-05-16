@@ -241,9 +241,10 @@ public class BudgetsActivity extends AppCompatActivity {
 
     private void initBudgetRecyclerView() {
         BudgetVM budgetVM = getBudgetVM();
-        BudgetOnClickCallback budgetOnClickCallback = this::startEditBudgetActivity;
-        BudgetAdapter budgetAdapter = new BudgetAdapter(budgetOnClickCallback, this,
+        BudgetAdapter budgetAdapter = new BudgetAdapter(this,
                 binding.cardViewRemainingCategories);
+        budgetAdapter.setBudgetOnClickCallback(this::startEditBudgetActivity);
+        budgetAdapter.setBudgetOnLongClickCallback(this::startDeleteBudgetConfirmDialog);
         budgetVM.getCategoryBudgetsLiveData().observe(this, budgetAdapter::setBudgets);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this,
@@ -255,15 +256,32 @@ public class BudgetsActivity extends AppCompatActivity {
         binding.recyclerViewBudgets.setAdapter(budgetAdapter);
     }
 
-    private void startEditBudgetActivity(Budget budget) {
+    private boolean startEditBudgetActivity(View budgetView, Budget budget) {
         Intent intent = new Intent(BudgetsActivity.this, AddEditBudgetActivity.class);
         intent.putExtra(AddEditBudgetActivity.EXTRA_ACTIVITY_TYPE,
                 AddEditBudgetActivity.EXTRA_ACTIVITY_TYPE_EDIT_BUDGET);
         intent.putExtra(AddEditBudgetActivity.EXTRA_EDITED_BUDGET_ID, budget.id);
         startActivity(intent);
+        return true;
     }
 
-    public interface BudgetOnClickCallback {
-        void onClick(Budget budget);
+    private boolean startDeleteBudgetConfirmDialog(View budgetView, Budget budget) {
+        ConfirmDialog dialog = new ConfirmDialog(this);
+        dialog.setConfirmTitle("Delete budget?");
+        dialog.setOkButtonOnClickListener(view -> {
+            getBudgetVM().delete(budget);
+        });
+        dialog.setOnShowListener(dialogInterface -> {
+            budgetView.setBackgroundColor(getColor(R.color.yellow));
+        });
+        dialog.setOnDismissListener(dialogInterface -> {
+            budgetView.setBackgroundColor(getColor(R.color.white));
+        });
+        dialog.show();
+        return true;
+    }
+
+    public interface BudgetViewCallback {
+        boolean handle(View view, Budget budget);
     }
 }
