@@ -4,6 +4,8 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import com.example.budgetingapp.entity.enums.CategoryName;
+
 @Entity(indices = {
         @Index(value = {"categoryName"}, unique = true)
 })
@@ -11,11 +13,11 @@ public class Budget {
     @PrimaryKey(autoGenerate = true)
     public Long id;
 
-    public String categoryName;
+    public CategoryName categoryName;
 
     public Long spendingMax;
 
-    public Budget(String categoryName, Long spendingMax) {
+    public Budget(CategoryName categoryName, Long spendingMax) {
         this.categoryName = categoryName;
         this.spendingMax = spendingMax;
     }

@@ -1,7 +1,5 @@
 package com.example.budgetingapp.entity.enums;
 
-import java.util.Arrays;
-
 public enum CategoryName {
     // Expense categories:
     BILLS("Bills"),
@@ -20,8 +18,11 @@ public enum CategoryName {
     SCHOLARSHIP("Scholarship"),
 
     // Both for expenses and income
-    CORRECTION("Correction"),
-    OTHER("Other");
+    CORRECTION("Correction"), // Only to be specified by the app itself
+    OTHER("Other"),
+
+    // Special value for budgets, not saved to DB
+    REMAINING_CATEGORIES("Remaining categories");
 
     private final String categoryName;
 
@@ -52,6 +53,10 @@ public enum CategoryName {
 
     public boolean isBothForExpensesAndIncome() {
         return this == CORRECTION || this == OTHER;
+    }
+
+    public boolean isNonPersistent() {
+        return this == REMAINING_CATEGORIES;
     }
 
     @Override

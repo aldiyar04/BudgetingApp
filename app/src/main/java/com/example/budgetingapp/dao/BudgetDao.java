@@ -18,12 +18,23 @@ import java.util.List;
 @Dao
 public interface BudgetDao {
     @Query("SELECT * FROM Budget WHERE categoryName is null")
-    LiveData<Budget> findMainBudget();
+    LiveData<Budget> findMainBudgetLiveData();
+
+    @Query("SELECT * FROM Budget WHERE categoryName is null")
+    Budget findMainBudget();
 
     @Transaction
     @Query("SELECT * FROM Category") // Relations (such as BudgetAndCategory) must be queried from the parent entity.
         // Category is the parent entity, because Budget has a foreign key that references Category.
-    LiveData<List<CategoryAndBudget>> findCategoryBudgets();
+    LiveData<List<CategoryAndBudget>> findCategoryBudgetsLiveData();
+
+    @Transaction
+    @Query("SELECT * FROM Category") // Relations (such as BudgetAndCategory) must be queried from the parent entity.
+        // Category is the parent entity, because Budget has a foreign key that references Category.
+    List<CategoryAndBudget> findCategoryBudgets();
+
+    @Query("SELECT * FROM Budget WHERE id = :id")
+    Budget findById(long id);
 
     @Query("select sum(amount) from `Transaction` where type='EXPENSE' " +
             "and date('now','start of month') <= createdOn")
@@ -32,6 +43,9 @@ public interface BudgetDao {
     @Query("select sum(amount) from `Transaction` where type='EXPENSE' " +
             "and date('now','start of month') <= createdOn and categoryName = :categoryName")
     LiveData<Long> getAmountSpentForLastMonth(CategoryName categoryName);
+
+    @Query("select sum(spendingMax) from budget where categoryName is not null")
+    long getSpendingMaxSumOfAllCategoryBudgets();
 
     @Insert
     void insert(Budget budget);

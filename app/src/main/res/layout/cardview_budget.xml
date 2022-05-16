@@ -9,56 +9,86 @@
     android:layout_marginEnd="10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/mainBudget"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="20dp">
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewHeader">
 
         <TextView
-            android:id="@+id/textViewMainBudgetTitle"
+            android:id="@+id/textViewBudgetCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Monthly 300,000 KZT"
+            android:text="Food &amp; Drinks"
             android:textColor="@color/dark_blue"
-            android:textSize="25sp"
+            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textViewMainBudgetDates"
+            android:id="@+id/textViewBudgetSpendingMax"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:layout_marginStart="1dp"
-            android:text="May 1, 2022 - May 31, 2022"
+            android:text="100,000 KZT"
+            android:textColor="@color/dark_blue"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewMainBudgetTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewBudgetCategory" />
 
         <TextView
-            android:id="@+id/textViewMainBudgetAmount"
+            android:id="@+id/textViewBudgetAmountMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="30,000 KZT"
-            android:textColor="@color/green"
-            android:textSize="35sp"
+            android:text="70,000 KZT left"
+            android:textColor="@color/royal_blue"
+            android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewMainBudgetDates" />
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/textViewBudgetOverspent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            android:text="overspent"
+            android:textColor="@color/red"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewBudgetAmountMessage" />
 
         <ProgressBar
-            android:id="@+id/progressBar"
+            android:id="@+id/progressBarBudget"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="35dp"
-            android:layout_marginTop="100dp"
+            android:layout_height="13dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="5dp"
+            android:max="100"
+            android:min="0"
+            android:progress="30"
             android:progressDrawable="@drawable/shape_progressbar"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewMainBudgetTitle"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewBudgetSpendingMax" />
+
+        <View
+            android:id="@+id/barBudgetToday"
+            android:layout_width="2.1dp"
+            android:layout_height="20dp"
+            android:background="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/progressBarBudget"
+            app:layout_constraintHorizontal_bias="0.5"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

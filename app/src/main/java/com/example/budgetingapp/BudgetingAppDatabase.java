@@ -71,9 +71,9 @@ public abstract class BudgetingAppDatabase extends RoomDatabase {
                     categoryDao.insert(new Category(categoryName, TransactionType.INCOME));
                 });
 
-                BudgetDao budgetDao = appDb.budgetDao();
-                Budget mainBudget = Budget.createMainBudget(300_000L);
-                budgetDao.insert(mainBudget);
+//                BudgetDao budgetDao = appDb.budgetDao();
+//                Budget mainBudget = Budget.createMainBudget(300_000L);
+//                budgetDao.insert(mainBudget);
             });
         }
     };

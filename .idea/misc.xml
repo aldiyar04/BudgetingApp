@@ -11,12 +11,14 @@
         <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/drawable/ic_plus.xml" value="0.196" />
         <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/drawable/selector.xml" value="0.1815" />
         <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/drawable/selector_category.xml" value="0.196" />
+        <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/drawable/shape_border.xml" value="0.2025" />
         <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/drawable/shape_dialog.xml" value="0.111" />
+        <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/drawable/shape_mainprogressbar.xml" value="0.2025" />
         <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/drawable/shape_progressbar.xml" value="0.195" />
         <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/layout/activity_add_edit_budget.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/layout/activity_add_edit_transaction.xml" value="0.264" />
         <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/layout/activity_add_transaction.xml" value="0.25416666666666665" />
-        <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/layout/activity_budgets.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/layout/activity_budgets.xml" value="0.264" />
         <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/layout/activity_dialog.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/layout/activity_reports.xml" value="0.25416666666666665" />

@@ -16,9 +16,11 @@
     <color name="green">#36AE7C</color>
     <color name="metallic_seaweed">#187498</color>
     <color name="dark_blue">#251D3A</color>
+    <color name="royal_blue">#4B7BE5</color>
     <color name="secondary_blue">#325288</color>
     <color name="light_blue">#C4DDFF</color>
     <color name="orange">#FF7800</color>
 <!--    #519259 green-->
     <color name="medium_slate_blue">#764AF1</color>
+    <color name="light_gray">#DFDFDF</color>
 </resources>

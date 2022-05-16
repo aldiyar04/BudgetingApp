@@ -48,6 +48,8 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountH
 
     @Override
     public void onBindViewHolder(@NonNull AccountHolder holder, int position) {
+
+
         Account account = accounts.get(position);
         holder.accountName.setText(account.name);
         String accBalance = KztAmountFormatter.format(account.balance);

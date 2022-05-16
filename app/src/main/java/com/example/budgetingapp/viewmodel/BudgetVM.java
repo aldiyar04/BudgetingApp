@@ -13,7 +13,6 @@ import com.example.budgetingapp.entity.Budget;
 import com.example.budgetingapp.entity.enums.CategoryName;
 import com.example.budgetingapp.entity.relation.CategoryAndBudget;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -26,17 +25,29 @@ public class BudgetVM extends AndroidViewModel {
     public BudgetVM(@NonNull Application application) {
         super(application);
         budgetDao = BudgetingAppDatabase.getInstance(application).budgetDao();
-        mainBudget = budgetDao.findMainBudget();
-        categoryBudgets = budgetDao.findCategoryBudgets();
+        mainBudget = budgetDao.findMainBudgetLiveData();
+        categoryBudgets = budgetDao.findCategoryBudgetsLiveData();
         executor = BudgetingApp.getExecutor();
     }
 
-    public LiveData<Budget> getMainBudget() {
+    public LiveData<Budget> getMainBudgetLiveData() {
         return mainBudget;
     }
 
-    public LiveData<List<CategoryAndBudget>> getCategoryBudgets() {
+    public Budget getMainBudget() {
+        return budgetDao.findMainBudget();
+    }
+
+    public LiveData<List<CategoryAndBudget>> getCategoryBudgetsLiveData() {
         return categoryBudgets;
+    }
+
+    public List<CategoryAndBudget> getCategoryBudgets() {
+        return budgetDao.findCategoryBudgets();
+    }
+
+    public Budget getById(long id) {
+        return budgetDao.findById(id);
     }
 
     public LiveData<Long> getAmountSpentForLastMonth() {
@@ -45,6 +56,10 @@ public class BudgetVM extends AndroidViewModel {
 
     public LiveData<Long> getAmountSpentForLastMonth(CategoryName categoryName) {
         return budgetDao.getAmountSpentForLastMonth(categoryName);
+    }
+
+    public long getSpendingMaxSumOfAllCategoryBudgets() {
+        return budgetDao.getSpendingMaxSumOfAllCategoryBudgets();
     }
 
     public void save(Budget budget) {

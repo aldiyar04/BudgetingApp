@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import com.example.budgetingapp.R;
 import com.example.budgetingapp.databinding.ActivityBudgetsBinding;
 import com.example.budgetingapp.entity.Budget;
+import com.example.budgetingapp.entity.Transaction;
 import com.example.budgetingapp.helper.KztAmountFormatter;
 import com.example.budgetingapp.viewmodel.BudgetVM;
 
@@ -31,13 +32,29 @@ public class BudgetsActivity extends AppCompatActivity {
 
         initBottomNav();
         initObservingMainBudgetByView();
-//        if (budgets.size() > 0) {
-//            binding.textViewNoBudgets.setVisibility(View.GONE);
-//            binding.buttonCreateMainBudget.setVisibility(View.GONE);
-//        } else {
-//            binding.textViewNoBudgets.setVisibility(View.VISIBLE);
-//            binding.buttonCreateMainBudget.setVisibility(View.VISIBLE);
-//        }
+
+        setCreateMainBudgetOnClickListener();
+        setAddBudgetOnClickListener();
+    }
+
+    private void setCreateMainBudgetOnClickListener() {
+        binding.buttonCreateMainBudget.setOnClickListener(view -> {
+            Intent intent = new Intent(BudgetsActivity.this,
+                    AddEditBudgetActivity.class);
+            intent.putExtra(AddEditBudgetActivity.EXTRA_ACTIVITY_TYPE,
+                    AddEditBudgetActivity.EXTRA_ACTIVITY_TYPE_CREATE_MAIN_BUDGET);
+            startActivity(intent);
+        });
+    }
+
+    private void setAddBudgetOnClickListener() {
+        binding.buttonAddBudget.setOnClickListener(view -> {
+            Intent intent = new Intent(BudgetsActivity.this,
+                    AddEditBudgetActivity.class);
+            intent.putExtra(AddEditBudgetActivity.EXTRA_ACTIVITY_TYPE,
+                    AddEditBudgetActivity.EXTRA_ACTIVITY_TYPE_ADD_BUDGET);
+            startActivity(intent);
+        });
     }
 
     private void initBottomNav() {
@@ -64,7 +81,7 @@ public class BudgetsActivity extends AppCompatActivity {
     }
 
     private void initObservingMainBudgetByView() {
-        getBudgetVM().getMainBudget().observe(this, this::setViewFromMainBudget);
+        getBudgetVM().getMainBudgetLiveData().observe(this, this::setViewFromMainBudget);
     }
 
     private BudgetVM getBudgetVM() {
@@ -72,24 +89,52 @@ public class BudgetsActivity extends AppCompatActivity {
     }
 
     private void setViewFromMainBudget(Budget mainBudget) {
-        if (mainBudget == null) {
-            binding.mainBudget.setVisibility(View.GONE);
+        boolean mainBudgetExists = mainBudget != null;
+        setVisibilityOnViews(mainBudgetExists);
+        if (!mainBudgetExists) {
             return;
         }
+
+        setMainBudgetEditOnClickListener();
 
         String spendingMaxFormatted = KztAmountFormatter.format(mainBudget.spendingMax);
         binding.textViewMainBudgetTitle.setText("Monthly " + spendingMaxFormatted);
         setMainBudgetDatesTextView();
 
         getBudgetVM().getAmountSpentForLastMonth().observe(this, amountSpent -> {
+            if (amountSpent == null) {
+                amountSpent = 0L;
+            }
             setMainBudgetAmountMessage(mainBudget.spendingMax, amountSpent);
             setBudgetSpentProgress(binding.progressBarMainBudget,
                     mainBudget.spendingMax, amountSpent);
         });
 
         setHorizontalBiasForTodayBarAndTextView();
+    }
 
-        binding.mainBudget.setVisibility(View.VISIBLE);
+    private void setVisibilityOnViews(boolean mainBudgetExists) {
+        if (mainBudgetExists) {
+            binding.mainBudget.setVisibility(View.VISIBLE);
+            binding.buttonAddBudget.setVisibility(View.VISIBLE);
+            binding.textViewNoBudgets.setVisibility(View.GONE);
+            binding.buttonCreateMainBudget.setVisibility(View.GONE);
+        } else {
+            binding.mainBudget.setVisibility(View.GONE);
+            binding.buttonAddBudget.setVisibility(View.GONE);
+            binding.textViewNoBudgets.setVisibility(View.VISIBLE);
+            binding.buttonCreateMainBudget.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setMainBudgetEditOnClickListener() {
+        binding.mainBudget.setOnClickListener(view -> {
+            Intent intent = new Intent(BudgetsActivity.this,
+                    AddEditBudgetActivity.class);
+            intent.putExtra(AddEditBudgetActivity.EXTRA_ACTIVITY_TYPE,
+                    AddEditBudgetActivity.EXTRA_ACTIVITY_TYPE_EDIT_MAIN_BUDGET);
+            startActivity(intent);
+        });
     }
 
     private void setMainBudgetDatesTextView() {
@@ -112,9 +157,6 @@ public class BudgetsActivity extends AppCompatActivity {
     }
 
     private void setMainBudgetAmountMessage(Long spendingMax, Long amountSpent) {
-        if (amountSpent == null) {
-            amountSpent = 0L;
-        }
         long leftToSpend = spendingMax - amountSpent;
         if (leftToSpend < 0) {
             long overspent = -leftToSpend;
@@ -156,8 +198,7 @@ public class BudgetsActivity extends AppCompatActivity {
     private void setBudgetSpentProgress(ProgressBar spentProgressBar,
                                         Long spendingMax, Long amountSpent) {
         Long progressRemainder = amountSpent % spendingMax;
-        progressRemainder = (progressRemainder == 0 || amountSpent > spendingMax) ?
-                spendingMax : progressRemainder;
+        progressRemainder = amountSpent >= spendingMax ? spendingMax : progressRemainder;
 
         if (spendingMax > Integer.MAX_VALUE || amountSpent > Integer.MAX_VALUE) {
             int progress = (int) ((double) progressRemainder / spendingMax * Integer.MAX_VALUE);
@@ -195,5 +236,9 @@ public class BudgetsActivity extends AppCompatActivity {
                 view.getLayoutParams();
         params.horizontalBias = horizontalBias;
         view.setLayoutParams(params);
+    }
+
+    public interface BudgetOnClickCallback {
+        void onClick(Budget budget);
     }
 }
