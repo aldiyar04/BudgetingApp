@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.budgetingapp.R;
-import com.example.budgetingapp.entity.Account;
 import com.example.budgetingapp.entity.Transaction;
 import com.example.budgetingapp.entity.enums.TransactionType;
 import com.example.budgetingapp.fragment.TransactionsFragment;
@@ -27,17 +26,26 @@ import java.util.List;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionHolder> {
     private List<Transaction> transactions = new ArrayList<>();
-    private final TransactionsFragment.TransactionOnClickCallback transactionOnClickCallback;
     private final ComponentActivity parentActivity;
     private final TextView noTransactionsTextView;
 
-    public TransactionAdapter(TransactionsFragment.TransactionOnClickCallback
-                                      transactionOnClickCallback,
-                              ComponentActivity parentActivity,
+    private TransactionsFragment.TransactionCallback transactionOnClickCallback;
+    private TransactionsFragment.TransactionCallback transactionOnLongClickCallback;
+
+    public TransactionAdapter(ComponentActivity parentActivity,
                               TextView noTransactionsTextView) {
-        this.transactionOnClickCallback = transactionOnClickCallback;
         this.parentActivity = parentActivity;
         this.noTransactionsTextView = noTransactionsTextView;
+    }
+
+    public void setTransactionOnClickCallback(TransactionsFragment.TransactionCallback
+                                                      transactionOnClickCallback) {
+        this.transactionOnClickCallback = transactionOnClickCallback;
+    }
+
+    public void setTransactionOnLongClickCallback(TransactionsFragment.TransactionCallback
+                                                          transactionOnLongClickCallback) {
+        this.transactionOnLongClickCallback = transactionOnLongClickCallback;
     }
 
     public void setTransactions(List<Transaction> transactions) {
@@ -48,10 +56,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         } else {
             noTransactionsTextView.setVisibility(View.VISIBLE);
         }
-    }
-
-    public Transaction getTransactionAtPosition(int position) {
-        return transactions.get(position);
     }
 
     @NonNull
@@ -65,17 +69,22 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     @Override
     public void onBindViewHolder(@NonNull TransactionHolder holder, int position) {
         initHolderFields(holder, position);
-        setEditTransactionOnClick(holder, position);
+        setOnClickListener(holder, position);
+        setOnLongClickListener(holder, position);
     }
 
-    private void setEditTransactionOnClick(TransactionHolder holder, int position) {
+    private void setOnClickListener(TransactionHolder holder, int position) {
         Transaction tx = transactions.get(position);
-        holder.itemView.setOnClickListener(view -> transactionOnClickCallback.onClick(tx));
-//        holder.cardViewTransactionItem.setOnTouchListener((view, event) -> {
-//            when(event.getAction()) {
-//
-//            }
-//        });
+        holder.itemView.setOnClickListener(view ->
+                transactionOnClickCallback.handle(holder.itemView, tx)
+        );
+    }
+
+    private void setOnLongClickListener(TransactionHolder holder, int position) {
+        Transaction tx = transactions.get(position);
+        holder.itemView.setOnLongClickListener(view ->
+                transactionOnLongClickCallback.handle(holder.itemView, tx)
+        );
     }
 
     private void initHolderFields(TransactionHolder holder, int position) {
@@ -113,14 +122,15 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
     private String getDateString(Transaction tx) {
-        String dateStr = tx.createdOn.toString();
+        String dateStr;
         if (tx.createdOn.equals(LocalDate.now())) {
             dateStr = "Today";
         } else if (tx.createdOn.plusDays(1L).equals(LocalDate.now())) {
             dateStr = "Yesterday";
+        } else {
+            DateTimeFormatter dtf =  DateTimeFormatter.ofPattern("MMMM dd, yyyy");
+            dateStr = dtf.format(tx.createdOn);
         }
-        DateTimeFormatter dtf =  DateTimeFormatter.ofPattern("MMMM dd, yyyy");
-        dateStr = dtf.format(tx.createdOn);
         return dateStr;
     }
 

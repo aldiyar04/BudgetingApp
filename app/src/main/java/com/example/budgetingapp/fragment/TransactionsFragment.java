@@ -1,6 +1,5 @@
 package com.example.budgetingapp.fragment;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,20 +8,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.budgetingapp.BudgetingAppDatabase;
+import com.example.budgetingapp.R;
+import com.example.budgetingapp.activity.AddEditTransactionActivity;
+import com.example.budgetingapp.activity.ConfirmDialog;
+import com.example.budgetingapp.adapter.TransactionAdapter;
 import com.example.budgetingapp.databinding.FragmentTransactionsBinding;
 import com.example.budgetingapp.entity.Account;
 import com.example.budgetingapp.entity.Transaction;
 import com.example.budgetingapp.entity.enums.TransactionType;
-import com.example.budgetingapp.activity.AddEditTransactionActivity;
-import com.example.budgetingapp.adapter.TransactionAdapter;
 import com.example.budgetingapp.viewmodel.AccountVM;
 import com.example.budgetingapp.viewmodel.TransactionVM;
 
@@ -45,10 +44,10 @@ public class TransactionsFragment extends Fragment {
         binding = FragmentTransactionsBinding.inflate(inflater, container, false);
 
         TransactionVM txVM = getTransactionVM();
-        TransactionOnClickCallback txOnClickCallback = this::startEditTransactionActivity;
-        TransactionAdapter txAdapter = new TransactionAdapter(txOnClickCallback, getActivity(),
+        TransactionAdapter txAdapter = new TransactionAdapter(getActivity(),
                 binding.textViewNoTransactions);
-        setDeleteTransactionOnSwipe(txAdapter);
+        txAdapter.setTransactionOnClickCallback(this::startEditTransactionActivity);
+        txAdapter.setTransactionOnLongClickCallback(this::startDeleteTransactionConfirmDialog);
         txVM.getAllTransactions().observe(getActivity(), txAdapter::setTransactions);
         initTransactionRecyclerView(txAdapter);
 
@@ -61,12 +60,13 @@ public class TransactionsFragment extends Fragment {
         return new ViewModelProvider(getActivity()).get(TransactionVM.class);
     }
 
-    private void startEditTransactionActivity(Transaction transaction) {
+    private boolean startEditTransactionActivity(View view, Transaction transaction) {
         Intent intent = new Intent(getActivity(), AddEditTransactionActivity.class);
         int activityTypeExtra = getActivityTypeExtra(transaction.type);
         intent.putExtra(AddEditTransactionActivity.EXTRA_ACTIVITY_TYPE, activityTypeExtra);
         intent.putExtra(AddEditTransactionActivity.EXTRA_EDITED_TRANSACTION_ID, transaction.id);
         startActivity(intent);
+        return true;
     }
 
     private int getActivityTypeExtra(TransactionType transactionType) {
@@ -77,6 +77,28 @@ public class TransactionsFragment extends Fragment {
             activityTypeExtra = AddEditTransactionActivity.EXTRA_ACTIVITY_TYPE_EDIT_INCOME;
         }
         return activityTypeExtra;
+    }
+
+    private boolean startDeleteTransactionConfirmDialog(View txView, Transaction tx) {
+        ConfirmDialog dialog = new ConfirmDialog(getActivity());
+        dialog.setConfirmTitle("Delete transaction?");
+        dialog.setOkButtonOnClickListener(view ->
+                deleteTransactionAndUpdateBalances(tx)
+        );
+        dialog.setOnShowListener(dialogInterface -> {
+            View txItemView = txView.findViewById(R.id.cardViewTransactionItem);
+            txItemView.setBackgroundColor(getColor(R.color.yellow));
+        });
+        dialog.setOnDismissListener(dialogInterface -> {
+            View txItemView = txView.findViewById(R.id.cardViewTransactionItem);
+            txItemView.setBackgroundColor(getColor(R.color.white));
+        });
+        dialog.show();
+        return true;
+    }
+
+    private int getColor(int colorID) {
+        return ContextCompat.getColor(getActivity(), colorID);
     }
 
     private void initTransactionRecyclerView(TransactionAdapter txAdapter) {
@@ -99,32 +121,6 @@ public class TransactionsFragment extends Fragment {
         intent.putExtra(AddEditTransactionActivity.EXTRA_ACTIVITY_TYPE,
                 AddEditTransactionActivity.EXTRA_ACTIVITY_TYPE_ADD);
         startActivity(intent);
-    }
-
-    private void setDeleteTransactionOnSwipe(TransactionAdapter txAdapter) {
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView,
-                                  @NonNull RecyclerView.ViewHolder viewHolder,
-                                  @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                new AlertDialog.Builder(viewHolder.itemView.getContext())
-                        .setMessage("DELETE TRANSACTION")
-                        .setPositiveButton("OK", (dialogInterface, id) -> {
-                            int position = viewHolder.getAdapterPosition();
-                            Transaction tx = txAdapter.getTransactionAtPosition(position);
-                            deleteTransactionAndUpdateBalances(tx);
-                        })
-                        .setNegativeButton("Cancel", (dialogInterface, id) -> {
-                            txAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
-                        })
-                        .create().show();
-            }
-        }).attachToRecyclerView(binding.txRecyclerView);
     }
 
     private AccountVM getAccountVM() {
@@ -156,7 +152,7 @@ public class TransactionsFragment extends Fragment {
         });
     }
 
-    public interface TransactionOnClickCallback {
-        void onClick(Transaction transaction);
+    public interface TransactionCallback {
+        boolean handle(View view, Transaction transaction);
     }
 }

@@ -11,6 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BudgetingApp">
         <activity
+            android:name=".activity.ConfirmDialog"
+            android:exported="false" />
+        <activity
             android:name=".activity.AddEditBudgetActivity"
             android:exported="false" />
         <activity
