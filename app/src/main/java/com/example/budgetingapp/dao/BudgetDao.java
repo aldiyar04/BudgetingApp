@@ -34,7 +34,8 @@ public interface BudgetDao {
     Budget findBudgetByCategoryName(CategoryName categoryName);
 
     @Query("select sum(amount) from `Transaction` where type='EXPENSE' " +
-            "and date('now','start of month') <= createdOn")
+            "and date('now','start of month') <= createdOn " +
+            "and categoryName != 'CORRECTION'")
     LiveData<Long> getAmountSpentForLastMonth();
 
     @Query("select sum(amount) from `Transaction` where type='EXPENSE' " +

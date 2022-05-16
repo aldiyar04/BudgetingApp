@@ -143,10 +143,7 @@ public class AddEditBudgetActivity extends AppCompatActivity {
 
     private boolean validateInput() {
         CategoryName selectedCategoryName = categoryRecyclerViewManager.getSelectedCategoryName();
-        if (amountInputManager.isAmountZero()) {
-            Toast.makeText(this, "Enter a nonzero value", Toast.LENGTH_LONG).show();
-            return false;
-        } else if (isBudgetTypeCategory()) {
+        if (isBudgetTypeCategory()) {
             long remainingOnMainBudget = getBudgetVM().getMainBudget().spendingMax -
                     getBudgetVM().getSpendingMaxSumOfAllCategoryBudgets();
             long spendingMax = amountInputManager.getAmount();
@@ -160,15 +157,30 @@ public class AddEditBudgetActivity extends AppCompatActivity {
             if (selectedCategoryName == null) {
                 categoryRecyclerViewManager.showCategorySelectionRequiredAnimation();
                 return false;
-            }
-            if (getBudgetVM().getBudgetByCategoryName(selectedCategoryName) != null) {
+            } else if (!isActivityTypeEdit() &&
+                    getBudgetVM().getBudgetByCategoryName(selectedCategoryName) != null) {
                 String msg = "Budget for category \"" + selectedCategoryName + "\" already exists";
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
                 return false;
+            } else if (amountInputManager.isAmountZero()) {
+                Toast.makeText(this, "Enter a nonzero value", Toast.LENGTH_LONG).show();
+                return false;
             }
-        } else if (!isBudgetTypeCategory()) {
-            long spendingMaxSum = getBudgetVM().getSpendingMaxSumOfAllCategoryBudgets();
-            long spendingMax = getBudgetVM().getMainBudget().spendingMax;
+        } else if (isBudgetTypeMain()) {
+            if (amountInputManager.isAmountZero()) {
+                Toast.makeText(this, "Enter a nonzero value", Toast.LENGTH_LONG).show();
+                return false;
+            }
+
+            long spendingMaxMain = amountInputManager.getAmount();
+            long spendingMaxSumOther = getBudgetVM().getSpendingMaxSumOfAllCategoryBudgets();
+            if (spendingMaxMain < spendingMaxSumOther) {
+                String spendingMaxSumFormatted = KztAmountFormatter.format(spendingMaxSumOther);
+                String msg = "Value cannot be < " + spendingMaxSumFormatted +
+                        "\n(sum of category budgets)";
+                Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+                return false;
+            }
         }
 
         return true;
@@ -179,6 +191,13 @@ public class AddEditBudgetActivity extends AppCompatActivity {
                 EXTRA_ACTIVITY_TYPE_CREATE_MAIN_BUDGET);
         return activityType == EXTRA_ACTIVITY_TYPE_ADD_BUDGET ||
                 activityType == EXTRA_ACTIVITY_TYPE_EDIT_BUDGET;
+    }
+
+    private boolean isBudgetTypeMain() {
+        int activityType = getIntent().getIntExtra(EXTRA_ACTIVITY_TYPE,
+                EXTRA_ACTIVITY_TYPE_CREATE_MAIN_BUDGET);
+        return activityType == EXTRA_ACTIVITY_TYPE_CREATE_MAIN_BUDGET ||
+                activityType == EXTRA_ACTIVITY_TYPE_EDIT_MAIN_BUDGET;
     }
 
     private void saveMainBudget(long enteredAmount) {
@@ -271,9 +290,8 @@ public class AddEditBudgetActivity extends AppCompatActivity {
 
     public class AmountInputManager {
         private static final int MAX_NUMBER_LENGTH = 8;
-        private final
 
-        void setNumpadButtonListeners() {
+        private final void setNumpadButtonListeners() {
             setClearButtonListener();
             setDigitButtonListeners();
         }

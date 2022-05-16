@@ -18,7 +18,7 @@ public enum CategoryName {
     SCHOLARSHIP("Scholarship"),
 
     // Both for expenses and income
-    CORRECTION("Correction"), // Only to be used by the app itself
+    CORRECTION("Correction"), // Only to be specified by the app itself
     OTHER("Other"),
 
     // Special value for budgets, not saved to DB

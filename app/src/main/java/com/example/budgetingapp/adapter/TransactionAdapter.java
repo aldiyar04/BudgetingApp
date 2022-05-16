@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.budgetingapp.R;
+import com.example.budgetingapp.entity.Account;
 import com.example.budgetingapp.entity.Transaction;
 import com.example.budgetingapp.entity.enums.TransactionType;
 import com.example.budgetingapp.fragment.TransactionsFragment;
@@ -137,7 +138,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     private String getAccountName(long accountId) {
         AccountVM accountVM = new ViewModelProvider(parentActivity).get(AccountVM.class);
-        return accountVM.getAccountById(accountId).name;
+        Account account = accountVM.getAccountById(accountId);
+        return account.name;
     }
 
     @Override
