@@ -14,6 +14,7 @@ import com.example.budgetingapp.databinding.FragmentExpenseIncomeByMonthBinding;
 import com.example.budgetingapp.entity.enums.TransactionType;
 import com.example.budgetingapp.entity.pojo.MonthAmount;
 import com.example.budgetingapp.viewmodel.TransactionVM;
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -70,7 +71,7 @@ public class ExpenseIncomeByMonthFragment extends Fragment {
         binding.barChart.getAxisRight().setEnabled(false);
 
         binding.barChart.setHighlightFullBarEnabled(false);
-        binding.barChart.setHighlightPerTapEnabled(false);
+//        binding.barChart.setHighlightPerTapEnabled(false);
         binding.barChart.setHighlightPerDragEnabled(false);
 
         binding.barChart.setExtraBottomOffset(20);
@@ -78,12 +79,11 @@ public class ExpenseIncomeByMonthFragment extends Fragment {
         binding.barChart.setExtraRightOffset(10);
 
         XAxis xAxis = binding.barChart.getXAxis();
-        xAxis.setLabelCount(6);
         xAxis.setDrawGridLines(false);
         xAxis.setCenterAxisLabels(true);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextSize(14);
-        xAxis.setGranularity(2);
+        xAxis.setGranularity(2); // 2 bar types: expense and income
         xAxis.setGranularityEnabled(true);
         xAxis.setAxisMinimum(0);
 
@@ -176,6 +176,8 @@ public class ExpenseIncomeByMonthFragment extends Fragment {
 
         configureBarChart();
         binding.barChart.invalidate();
+
+        binding.barChart.animateY(800, Easing.EaseInOutSine);
     }
 
     private float getXWidth(int numBars, float groupWidth) {
