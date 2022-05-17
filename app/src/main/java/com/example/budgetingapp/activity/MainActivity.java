@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     private void replaceFragment(Class<? extends Fragment> newFragmentClass) {
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .add(R.id.fragmentContainer, newFragmentClass, null)
+                .replace(R.id.fragmentContainer, newFragmentClass, null)
                 .commit();
     }
 

@@ -33,6 +33,7 @@ public class BudgetsActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         initBottomNav();
+        setVisibilityOnViews();
         initObservingMainBudgetByView();
         setCreateMainBudgetOnClickListener();
         setAddBudgetOnClickListener();
@@ -91,9 +92,8 @@ public class BudgetsActivity extends AppCompatActivity {
     }
 
     private void setViewFromMainBudget(Budget mainBudget) {
-        boolean mainBudgetExists = mainBudget != null;
-        setVisibilityOnViews(mainBudgetExists);
-        if (!mainBudgetExists) {
+        setVisibilityOnViews();
+        if (!mainBudgetExists()) {
             return;
         }
 
@@ -115,18 +115,23 @@ public class BudgetsActivity extends AppCompatActivity {
         setHorizontalBiasForTodayBarAndTextView();
     }
 
-    private void setVisibilityOnViews(boolean mainBudgetExists) {
-        if (mainBudgetExists) {
-            binding.mainBudget.setVisibility(View.VISIBLE);
+    private void setVisibilityOnViews() {
+        if (mainBudgetExists()) {
+            binding.scrollViewContainer.setVisibility(View.VISIBLE);
             binding.buttonAddBudget.setVisibility(View.VISIBLE);
             binding.textViewNoBudgets.setVisibility(View.GONE);
             binding.buttonCreateMainBudget.setVisibility(View.GONE);
         } else {
-            binding.mainBudget.setVisibility(View.GONE);
+            binding.scrollViewContainer.setVisibility(View.GONE);
             binding.buttonAddBudget.setVisibility(View.GONE);
             binding.textViewNoBudgets.setVisibility(View.VISIBLE);
             binding.buttonCreateMainBudget.setVisibility(View.VISIBLE);
         }
+    }
+
+    private boolean mainBudgetExists() {
+        Budget mainBudget = getBudgetVM().getMainBudget();
+        return mainBudget != null;
     }
 
     private void setMainBudgetEditOnClickListener() {

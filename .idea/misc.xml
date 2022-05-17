@@ -31,10 +31,13 @@
         <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/layout/cardview_transaction.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/layout/dialog_add_edit_account.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/layout/fragment_accounts.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/layout/fragment_expense_income_by_month.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/layout/fragment_expenses_by_category.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/layout/fragment_transactions.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/layout/header_spinner_item.xml" value="0.10648148148148148" />
         <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/layout/spinner_item.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/layout/spinner_item_header.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/layout/spinner_item_header_reports.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/layout/transaction_item.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Aldiyar/AndroidStudioProjects/BudgetingApp/app/src/main/res/menu/bottom_menu.xml" value="0.25416666666666665" />
       </map>

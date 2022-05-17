@@ -157,12 +157,16 @@ public class AddEditBudgetActivity extends AppCompatActivity {
             if (selectedCategoryName == null) {
                 categoryRecyclerViewManager.showCategorySelectionRequiredAnimation();
                 return false;
-            } else if (!isActivityTypeEdit() &&
+            }
+
+            if (!isActivityTypeEdit() &&
                     getBudgetVM().getBudgetByCategoryName(selectedCategoryName) != null) {
                 String msg = "Budget for category \"" + selectedCategoryName + "\" already exists";
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
                 return false;
-            } else if (amountInputManager.isAmountZero()) {
+            }
+
+            if (amountInputManager.isAmountZero()) {
                 Toast.makeText(this, "Enter a nonzero value", Toast.LENGTH_LONG).show();
                 return false;
             }

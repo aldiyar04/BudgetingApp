@@ -9,8 +9,8 @@ public enum TransactionType {
 
     private final String type;
 
-    TransactionType(String category) {
-        this.type = category;
+    TransactionType(String type) {
+        this.type = type;
     }
 
     @Override

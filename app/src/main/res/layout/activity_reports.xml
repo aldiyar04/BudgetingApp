@@ -10,71 +10,50 @@
         android:id="@+id/textViewHeader"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:orientation="horizontal"
         android:background="@color/metallic_seaweed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/textViewBudgets"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
             android:layout_gravity="center"
-            android:text="Reports"
-            android:textColor="@color/white"
-            android:textSize="25sp" />
-    </FrameLayout>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="600dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewHeader">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="120dp"
-            android:paddingTop="20dp"
-            android:paddingHorizontal="20dp">
+            android:layout_marginHorizontal="28dp">
 
             <TextView
-                android:id="@+id/textViewPeriod"
+                android:id="@+id/textViewBudgets"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="Period: "
-                android:textColor="@color/dark_blue"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_gravity="center_vertical"
+                android:text="Report: "
+                android:textColor="@color/white"
+                android:textSize="22sp" />
 
             <Spinner
-                android:id="@+id/spinnerPeriod"
+                android:id="@+id/spinnerReport"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="10dp"
-                app:layout_constraintStart_toEndOf="@+id/textViewPeriod"
-                app:layout_constraintTop_toTopOf="parent"/>
+                android:layout_marginTop="1dp"/>
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="400dp"
-                app:layout_constraintTop_toBottomOf="@id/textViewPeriod"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+        </LinearLayout>
 
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/pieChartExpensesByCategory"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="30dp" />
-            </FrameLayout>
+    </FrameLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </ScrollView>
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomNav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewHeader"
+        app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
@@ -87,4 +66,5 @@
         app:itemTextColor="@drawable/selector"
         app:itemIconTint="@drawable/selector"
         app:menu="@menu/bottom_menu" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
