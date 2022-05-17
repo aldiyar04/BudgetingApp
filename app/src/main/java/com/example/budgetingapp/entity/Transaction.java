@@ -50,8 +50,15 @@ public class Transaction {
             return this;
         }
 
+        public Builder createdOn(LocalDate createdOn) {
+            Transaction.this.createdOn = createdOn;
+            return this;
+        }
+
         public Transaction build() {
-            Transaction.this.createdOn = LocalDate.now();
+            if (Transaction.this.createdOn == null) {
+                Transaction.this.createdOn = LocalDate.now();
+            }
             return Transaction.this;
         }
     }

@@ -104,7 +104,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         int color;
         String prefix;
         if (tx.type == TransactionType.EXPENSE) {
-            color = getColor(R.color.red);
+            color = getColor(R.color.dark_red);
             prefix = "from ";
         } else {
             color = getColor(R.color.green);

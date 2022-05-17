@@ -14,7 +14,6 @@ import com.example.budgetingapp.databinding.FragmentExpenseIncomeByMonthBinding;
 import com.example.budgetingapp.entity.enums.TransactionType;
 import com.example.budgetingapp.entity.pojo.MonthAmount;
 import com.example.budgetingapp.viewmodel.TransactionVM;
-import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -75,7 +74,7 @@ public class ExpenseIncomeByMonthFragment extends Fragment {
 
 
 
-        List<String> yearMonthLabels = expenseMonthAmounts.stream()
+        List<String> yearMonthLabels = monthAmounts.stream()
                 .map(MonthAmount::getYearMonth)
                 .collect(Collectors.toList());
         binding.barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(yearMonthLabels));
@@ -84,23 +83,28 @@ public class ExpenseIncomeByMonthFragment extends Fragment {
         binding.barChart.setDrawBarShadow(false);
         binding.barChart.getDescription().setEnabled(false);
         binding.barChart.setPinchZoom(false);
+        binding.barChart.setDoubleTapToZoomEnabled(false);
         binding.barChart.setDrawGridBackground(false);
         binding.barChart.getAxisRight().setEnabled(false);
 
+        binding.barChart.setHighlightFullBarEnabled(false);
+        binding.barChart.setHighlightPerTapEnabled(false);
+        binding.barChart.setHighlightPerDragEnabled(false);
+
         binding.barChart.setExtraBottomOffset(20);
-        binding.barChart.setExtraTopOffset(20);
         binding.barChart.setExtraLeftOffset(10);
         binding.barChart.setExtraRightOffset(10);
 
         // CENTER X AXIS LABELS: (barSpace + barWidth) * 2 + groupSpace = 1
         float barSpace = -0.3f;
         float barWidth = 0.4f;
-        float groupSpace = 0.8f;
+        float groupSpace = 0.9f;
         binding.barChart.groupBars(0, groupSpace, barSpace);
         data.setBarWidth(barWidth);
         data.setDrawValues(false);
 
         XAxis xAxis = binding.barChart.getXAxis();
+        xAxis.setLabelCount(6);
         xAxis.setDrawGridLines(false);
         xAxis.setCenterAxisLabels(true);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -108,7 +112,9 @@ public class ExpenseIncomeByMonthFragment extends Fragment {
         xAxis.setGranularity(2);
         xAxis.setGranularityEnabled(true);
         xAxis.setAxisMinimum(0);
-        xAxis.setAxisMaximum(0 + data.getGroupWidth(groupSpace, barSpace) * 6);
+        xAxis.setAxisMaximum(0 + data.getGroupWidth(groupSpace, barSpace) * 12);
+
+        binding.barChart.moveViewToX(data.getGroupWidth(groupSpace, barSpace) * 12);
 
         YAxis leftAxis = binding.barChart.getAxisLeft();
         leftAxis.setDrawGridLines(false);
@@ -122,8 +128,9 @@ public class ExpenseIncomeByMonthFragment extends Fragment {
 
 
         // Horizontal scrolling
-//        binding.barChart.setDragEnabled(true);
-//        binding.barChart.setVisibleXRangeMaximum(6);
+        binding.barChart.setVisibleXRangeMaximum(6);
+        binding.barChart.setDragEnabled(true);
+
 
         binding.barChart.invalidate();
     }

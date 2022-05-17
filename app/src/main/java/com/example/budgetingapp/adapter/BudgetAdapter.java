@@ -119,7 +119,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.BudgetHold
             String overspentMessage = getOverspentMessage(overspent, spendingMax);
             holder.textViewOverspent.setText(overspentMessage);
 
-            holder.textViewAmountMessage.setTextColor(getColor(R.color.red));
+            holder.textViewAmountMessage.setTextColor(getColor(R.color.dark_red));
             holder.textViewOverspent.setVisibility(View.VISIBLE);
         } else {
             String leftToSpendMsg = KztAmountFormatter.format(leftToSpend) + " left";
@@ -128,7 +128,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.BudgetHold
             if (leftToSpend > 0) {
                 holder.textViewAmountMessage.setTextColor(getColor(R.color.royal_blue));
             } else {
-                holder.textViewAmountMessage.setTextColor(getColor(R.color.red));
+                holder.textViewAmountMessage.setTextColor(getColor(R.color.dark_red));
             }
 
             holder.textViewOverspent.setVisibility(View.GONE);

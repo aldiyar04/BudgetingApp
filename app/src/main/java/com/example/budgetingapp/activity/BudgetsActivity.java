@@ -174,7 +174,7 @@ public class BudgetsActivity extends AppCompatActivity {
             String overspentMessage = getOverspentMessage(overspent, spendingMax);
             binding.textViewMainBudgetMessage.setText(overspentMessage);
 
-            setColorOnMainBudgetAmountMessage(getColor(R.color.red));
+            setColorOnMainBudgetAmountMessage(getColor(R.color.dark_red));
         } else {
             String leftToSpendFormatted = KztAmountFormatter.format(leftToSpend);
             binding.textViewMainBudgetAmount.setText(leftToSpendFormatted);
@@ -183,7 +183,7 @@ public class BudgetsActivity extends AppCompatActivity {
             if (leftToSpend > 0) {
                 setColorOnMainBudgetAmountMessage(getColor(R.color.green));
             } else {
-                setColorOnMainBudgetAmountMessage(getColor(R.color.red));
+                setColorOnMainBudgetAmountMessage(getColor(R.color.dark_red));
             }
         }
     }

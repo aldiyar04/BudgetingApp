@@ -59,7 +59,7 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountH
         if (account.balance > 0) {
             color = getColor(R.color.green);
         } else {
-            color = getColor(R.color.red);
+            color = getColor(R.color.dark_red);
         }
         holder.accountBalance.setTextColor(color);
     }
