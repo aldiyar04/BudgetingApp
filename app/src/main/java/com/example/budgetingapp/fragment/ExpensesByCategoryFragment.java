@@ -1,7 +1,9 @@
 package com.example.budgetingapp.fragment;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.budgetingapp.R;
+import com.example.budgetingapp.activity.ReportsActivity;
 import com.example.budgetingapp.databinding.FragmentExpensesByCategoryBinding;
 import com.example.budgetingapp.entity.pojo.CategoryExpense;
 import com.example.budgetingapp.viewmodel.TransactionVM;
@@ -48,6 +51,10 @@ public class ExpensesByCategoryFragment extends Fragment {
         }
         binding = FragmentExpensesByCategoryBinding.inflate(inflater, container, false);
 
+        // To remove flickering elements, initially INVISIBLE,
+        // later set to VISIBLE in refreshPieChart() (LiveData observer method)
+        binding.getRoot().setVisibility(View.INVISIBLE);
+
         initPeriodSpinner();
         configurePieChart();
 
@@ -60,6 +67,17 @@ public class ExpensesByCategoryFragment extends Fragment {
                 periods);
         binding.spinnerPeriod.setAdapter(adapter);
         binding.spinnerPeriod.setOnItemSelectedListener(new PeriodSpinnerListener());
+        String period = loadPeriodFromSharedPref();
+        if (period.equalsIgnoreCase("last month")) {
+            binding.spinnerPeriod.setSelection(0);
+        } else if (period.equalsIgnoreCase("all time")) {
+            binding.spinnerPeriod.setSelection(1);
+        }
+    }
+
+    private String loadPeriodFromSharedPref() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        return sharedPref.getString("Period", "last month");
     }
 
     private TransactionVM getTransactionVM() {
@@ -101,6 +119,8 @@ public class ExpensesByCategoryFragment extends Fragment {
     }
 
     private void refreshPieChart(List<CategoryExpense> categoryExpenses) {
+        binding.getRoot().setVisibility(View.VISIBLE);
+
         long totalExpense = categoryExpenses.stream()
                 .mapToLong(categoryExpense -> categoryExpense.expenseAmount)
                 .sum();
@@ -152,8 +172,17 @@ public class ExpensesByCategoryFragment extends Fragment {
                 throw new IllegalStateException("Selected period must be either \"all time\" " +
                         "or \"last month\"");
             }
+            savePeriodToSharedPref(selectedPeriod);
             categoryExpenses.observe(getActivity(),
                     ExpensesByCategoryFragment.this::refreshPieChart);
+        }
+
+        private void savePeriodToSharedPref(String period) {
+            SharedPreferences sharedPref =
+                    PreferenceManager.getDefaultSharedPreferences(getActivity());
+            sharedPref.edit()
+                    .putString("Period", period)
+                    .apply();
         }
 
         @Override

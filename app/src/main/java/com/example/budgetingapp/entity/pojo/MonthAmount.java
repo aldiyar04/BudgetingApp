@@ -9,6 +9,14 @@ public class MonthAmount {
     public Long amount;
     public TransactionType type;
 
+    public MonthAmount() {}
+
+    public MonthAmount(String yearMonth, Long amount, TransactionType type) {
+        this.yearMonth = yearMonth;
+        this.amount = amount;
+        this.type = type;
+    }
+
     public void setYearMonth(String yearMonth) {
         String year = yearMonth.substring(0, 4);
         String month = yearMonth.substring(4);

@@ -149,7 +149,7 @@ public class AddEditBudgetActivity extends AppCompatActivity {
             long spendingMax = amountInputManager.getAmount();
             if (spendingMax > remainingOnMainBudget) {
                 String remainingFormatted = KztAmountFormatter.format(remainingOnMainBudget);
-                String msg = "Only " + remainingFormatted + " remaining on the main budget";
+                String msg = "Only " + remainingFormatted + " remaining\n on the main budget";
                 Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 return false;
             }

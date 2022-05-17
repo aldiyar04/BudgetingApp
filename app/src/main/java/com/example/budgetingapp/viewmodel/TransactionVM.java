@@ -69,7 +69,7 @@ public class TransactionVM extends AndroidViewModel {
                 "'-" + monthsBackFromCurrentMonth + " month') <= createdOn " +
                 "and categoryName != 'CORRECTION' " +
                 "group by yearMonth, type " +
-                "order by cast(yearMonth as integer)";
+                "order by cast(yearMonth as integer), type";
         SupportSQLiteQuery query = new SimpleSQLiteQuery(queryStr);
         return transactionDao.getMonthAmounts(query);
     }

@@ -64,8 +64,6 @@ public class ReportsActivity extends AppCompatActivity {
     private void initReportSpinner() {
         List<String> reports = Report.getStringValueList();
 
-
-
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 R.layout.spinner_item_report,
                 reports);
