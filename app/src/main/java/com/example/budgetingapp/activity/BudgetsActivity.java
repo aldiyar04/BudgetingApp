@@ -28,6 +28,11 @@ public class BudgetsActivity extends AppCompatActivity {
     private ActivityBudgetsBinding binding;
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityBudgetsBinding.inflate(getLayoutInflater());

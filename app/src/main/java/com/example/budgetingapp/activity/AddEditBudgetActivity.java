@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.budgetingapp.R;
 import com.example.budgetingapp.adapter.SelectableCategoryAdapter;
 import com.example.budgetingapp.databinding.ActivityAddEditBudgetBinding;
 import com.example.budgetingapp.entity.Budget;
@@ -44,11 +45,19 @@ public class AddEditBudgetActivity extends AppCompatActivity {
         binding = ActivityAddEditBudgetBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        overridePendingTransition(R.anim.enter_from_right, R.anim.move_left_a_bit);
+
         setHeaderAndCategoryRecyclerViewBasedOnActivityType();
         categoryRecyclerViewManager.initRecyclerView();
         amountInputManager.setNumpadButtonListeners();
         initEditedBudgetViewValuesIfActivityTypeEdit();
         setCloseAndDoneButtonListeners();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.move_right_a_bit, R.anim.exit_to_right);
     }
 
     private void setHeaderAndCategoryRecyclerViewBasedOnActivityType() {

@@ -63,11 +63,19 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         binding = ActivityAddEditTransactionBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        overridePendingTransition(R.anim.enter_from_right, R.anim.move_left_a_bit);
+
         setHeaderAndCategoryRecyclerViewBasedOnActivityType();
         accountRecyclerViewManager.addAccountRecyclerViewToLayout();
         transactionAmountManager.setNumpadButtonListeners();
         initEditedTransactionViewValuesIfActivityTypeEdit();
         setCloseAndDoneButtonListeners();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.move_right_a_bit, R.anim.exit_to_right);
     }
 
     private void setHeaderAndCategoryRecyclerViewBasedOnActivityType() {
