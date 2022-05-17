@@ -71,6 +71,14 @@ public abstract class BudgetingAppDatabase extends RoomDatabase {
                     categoryDao.insert(Category.bothForIncomeAndExpenses(categoryName));
                 });
 
+                TransactionDao txDao = appDb.transactionDao();
+                Transaction tx1 = Transaction.builder()
+                        .type(TransactionType.EXPENSE)
+                        .accountId(1L)
+                        .categoryName(CategoryName.BILLS)
+                        .amount(10_000L)
+                        .build();
+
 //                BudgetDao budgetDao = appDb.budgetDao();
 //                Budget mainBudget = Budget.createMainBudget(300_000L);
 //                budgetDao.insert(mainBudget);

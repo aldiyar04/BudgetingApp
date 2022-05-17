@@ -1,7 +1,6 @@
 package com.example.budgetingapp.fragment;
 
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,27 +67,27 @@ public class ExpensesByCategoryFragment extends Fragment {
     }
 
     private void configurePieChart() {
-        binding.pieChartExpensesByCategory.setNoDataText("No chart data available");
-        binding.pieChartExpensesByCategory.setNoDataTextColor(getColor(R.color.metallic_seaweed));
+        binding.pieChart.setNoDataText("No chart data available");
+        binding.pieChart.setNoDataTextColor(getColor(R.color.metallic_seaweed));
         // no data text size:
-        binding.pieChartExpensesByCategory.getPaint(Chart.PAINT_INFO).setTextSize(60);
+        binding.pieChart.getPaint(Chart.PAINT_INFO).setTextSize(60);
 
-        binding.pieChartExpensesByCategory.setDrawHoleEnabled(true);
-        binding.pieChartExpensesByCategory.setUsePercentValues(true);
-        binding.pieChartExpensesByCategory.setEntryLabelTextSize(12);
-        binding.pieChartExpensesByCategory.setEntryLabelColor(Color.BLACK);
-        binding.pieChartExpensesByCategory.setCenterText("Spending by Category");
-        binding.pieChartExpensesByCategory.setCenterTextSize(20);
-        binding.pieChartExpensesByCategory.setCenterTextColor(getColor(R.color.metallic_seaweed));
-        binding.pieChartExpensesByCategory.getDescription().setEnabled(false);
+        binding.pieChart.setDrawHoleEnabled(true);
+        binding.pieChart.setUsePercentValues(true);
+        binding.pieChart.setEntryLabelTextSize(12);
+        binding.pieChart.setEntryLabelColor(Color.BLACK);
+        binding.pieChart.setCenterText("Spending by Category");
+        binding.pieChart.setCenterTextSize(20);
+        binding.pieChart.setCenterTextColor(getColor(R.color.metallic_seaweed));
+        binding.pieChart.getDescription().setEnabled(false);
 
         // Offsets so that pie chart values don't get cut off
-        binding.pieChartExpensesByCategory.setExtraTopOffset(15f);
-        binding.pieChartExpensesByCategory.setExtraBottomOffset(15f);
-        binding.pieChartExpensesByCategory.setExtraLeftOffset(15f);
-        binding.pieChartExpensesByCategory.setExtraRightOffset(15f);
+        binding.pieChart.setExtraTopOffset(15f);
+        binding.pieChart.setExtraBottomOffset(15f);
+        binding.pieChart.setExtraLeftOffset(15f);
+        binding.pieChart.setExtraRightOffset(15f);
 
-        Legend legend = binding.pieChartExpensesByCategory.getLegend();
+        Legend legend = binding.pieChart.getLegend();
         legend.setEnabled(false);
 //        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
 //        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
@@ -117,16 +116,16 @@ public class ExpensesByCategoryFragment extends Fragment {
 
         PieData data = new PieData(dataSet);
         data.setDrawValues(true);
-        data.setValueFormatter(new PercentFormatter(binding.pieChartExpensesByCategory));
+        data.setValueFormatter(new PercentFormatter(binding.pieChart));
         data.setValueTextSize(12f);
         data.setValueTextColor(Color.BLACK);
 
         if (!entries.isEmpty()) {
-            binding.pieChartExpensesByCategory.setData(data);
+            binding.pieChart.setData(data);
         }
-        binding.pieChartExpensesByCategory.invalidate();
+        binding.pieChart.invalidate();
 
-        binding.pieChartExpensesByCategory.animateY(800, Easing.EaseInQuad);
+        binding.pieChart.animateY(800, Easing.EaseInQuad);
     }
 
     private List<Integer> getPieChartColors() {
