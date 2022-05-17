@@ -1,5 +1,6 @@
 package com.example.budgetingapp.activity;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -207,14 +208,24 @@ public class BudgetsActivity extends AppCompatActivity {
         Long progressRemainder = amountSpent % spendingMax;
         progressRemainder = amountSpent >= spendingMax ? spendingMax : progressRemainder;
 
+        int max;
+        int progress;
         if (spendingMax > Integer.MAX_VALUE || amountSpent > Integer.MAX_VALUE) {
-            int progress = (int) ((double) progressRemainder / spendingMax * Integer.MAX_VALUE);
-            spentProgressBar.setMax(Integer.MAX_VALUE);
-            spentProgressBar.setProgress(progress);
+            progress = (int) ((double) progressRemainder / spendingMax * Integer.MAX_VALUE);
+            max = Integer.MAX_VALUE;
         } else {
-            spentProgressBar.setMax(spendingMax.intValue() );
-            spentProgressBar.setProgress(progressRemainder.intValue());
+            max = spendingMax.intValue();
+            progress = progressRemainder.intValue();
         }
+        spentProgressBar.setMax(max);
+
+        ObjectAnimator progressAnimator = ObjectAnimator.ofInt(
+                spentProgressBar,
+                "progress",
+                0, progress
+        );
+        progressAnimator.setDuration(700);
+        progressAnimator.start();
     }
 
     private void setHorizontalBiasForTodayBarAndTextView() {

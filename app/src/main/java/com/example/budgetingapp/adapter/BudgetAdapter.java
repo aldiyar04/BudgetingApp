@@ -1,5 +1,6 @@
 package com.example.budgetingapp.adapter;
 
+import android.animation.ObjectAnimator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -153,14 +154,24 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.BudgetHold
         Long progressRemainder = amountSpent % spendingMax;
         progressRemainder = amountSpent >= spendingMax ? spendingMax : progressRemainder;
 
+        int max;
+        int progress;
         if (spendingMax > Integer.MAX_VALUE || amountSpent > Integer.MAX_VALUE) {
-            int progress = (int) ((double) progressRemainder / spendingMax * Integer.MAX_VALUE);
-            progressBarSpent.setMax(Integer.MAX_VALUE);
-            progressBarSpent.setProgress(progress);
+            progress = (int) ((double) progressRemainder / spendingMax * Integer.MAX_VALUE);
+            max = Integer.MAX_VALUE;
         } else {
-            progressBarSpent.setMax(spendingMax.intValue() );
-            progressBarSpent.setProgress(progressRemainder.intValue());
+            max = spendingMax.intValue();
+            progress = progressRemainder.intValue();
         }
+        progressBarSpent.setMax(max);
+
+        ObjectAnimator progressAnimator = ObjectAnimator.ofInt(
+                progressBarSpent,
+                "progress",
+                0, progress
+        );
+        progressAnimator.setDuration(700);
+        progressAnimator.start();
     }
 
     private void setHorizontalBiasForTodayBar(BudgetHolder holder) {
