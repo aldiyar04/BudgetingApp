@@ -51,7 +51,6 @@ public class ExpenseIncomeByMonthFragment extends Fragment {
         // later set to VISIBLE in refreshPieChart() (LiveData observer method)
         binding.getRoot().setVisibility(View.INVISIBLE);
 
-        configureBarChart();
         getTransactionVM().getMonthAmounts(5)
                 .observe(getActivity(), this::refreshBarChart);
 
@@ -175,6 +174,7 @@ public class ExpenseIncomeByMonthFragment extends Fragment {
             binding.barChart.moveViewToX(xWidth);
         }
 
+        configureBarChart();
         binding.barChart.invalidate();
     }
 
