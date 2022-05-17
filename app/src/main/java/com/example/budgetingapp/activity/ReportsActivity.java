@@ -125,7 +125,7 @@ public class ReportsActivity extends AppCompatActivity {
         binding.pieChartExpensesByCategory.setData(data);
         binding.pieChartExpensesByCategory.invalidate();
 
-        binding.pieChartExpensesByCategory.animateY(1000, Easing.EaseInQuad);
+        binding.pieChartExpensesByCategory.animateY(800, Easing.EaseInQuad);
     }
 
     private List<Integer> getPieChartColors() {
