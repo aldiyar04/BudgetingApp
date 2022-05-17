@@ -1,6 +1,8 @@
 package com.example.budgetingapp;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
@@ -180,7 +182,7 @@ public abstract class BudgetingAppDatabase extends RoomDatabase {
 
                 List<Transaction> transactions = Arrays.asList(tx1, tx2, tx3, tx4, tx5, tx6,
                         tx7, tx8, tx9, tx10, tx11, tx12);
-                transactions.forEach(txDao::insert);
+                transactions.forEach(BudgetingAppDatabase::saveTransactionAndUpdateBalances);
 
 //                BudgetDao budgetDao = appDb.budgetDao();
 //                Budget mainBudget = Budget.createMainBudget(300_000L);
@@ -188,6 +190,35 @@ public abstract class BudgetingAppDatabase extends RoomDatabase {
             });
         }
     };
+
+    private static void saveTransactionAndUpdateBalances(Transaction tx) {
+        BudgetingAppDatabase appDb = BudgetingAppDatabase.INSTANCE;
+
+        TransactionDao txDao = appDb.transactionDao();
+        AccountDao accountDao = appDb.accountDao();
+
+        appDb.runInTransaction(() -> {
+            txDao.insert(tx);
+            Account account = accountDao.findById(tx.accountId);
+
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(
+                    BudgetingApp.getContext()
+            );
+            long netWorth = sharedPref.getLong("NetWorth", 0L);
+
+            if (tx.type == TransactionType.EXPENSE) {
+                account.balance -= tx.amount;
+                netWorth -= tx.amount;
+            } else {
+                account.balance += tx.amount;
+                netWorth += tx.amount;
+            }
+            accountDao.update(account);
+            sharedPref.edit()
+                    .putLong("NetWorth", netWorth)
+                    .apply();
+        });
+    }
 
     private static LocalDate getFirstDayOfMonth(int monthsBackFromCurrentMonth) {
         LocalDate todayDate = LocalDate.now();

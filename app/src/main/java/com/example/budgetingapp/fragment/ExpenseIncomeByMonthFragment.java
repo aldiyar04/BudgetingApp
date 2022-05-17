@@ -112,9 +112,9 @@ public class ExpenseIncomeByMonthFragment extends Fragment {
         xAxis.setGranularity(2);
         xAxis.setGranularityEnabled(true);
         xAxis.setAxisMinimum(0);
-        xAxis.setAxisMaximum(0 + data.getGroupWidth(groupSpace, barSpace) * 12);
+        xAxis.setAxisMaximum(0 + data.getGroupWidth(groupSpace, barSpace) * 12 - 1);
 
-        binding.barChart.moveViewToX(data.getGroupWidth(groupSpace, barSpace) * 12);
+        binding.barChart.moveViewToX(data.getGroupWidth(groupSpace, barSpace) * 12 - 1);
 
         YAxis leftAxis = binding.barChart.getAxisLeft();
         leftAxis.setDrawGridLines(false);

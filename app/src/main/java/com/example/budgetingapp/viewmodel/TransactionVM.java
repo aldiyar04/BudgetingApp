@@ -46,6 +46,7 @@ public class TransactionVM extends AndroidViewModel {
         String queryStr = "select categoryName as categoryName, sum(amount) as expenseAmount " +
                 "from `Transaction` " +
                 "where type='EXPENSE' " +
+                "and categoryName != 'CORRECTION' " +
                 "group by categoryName";
         SimpleSQLiteQuery query = new SimpleSQLiteQuery(queryStr);
         return transactionDao.getExpensesByCategories(query);
@@ -55,6 +56,7 @@ public class TransactionVM extends AndroidViewModel {
         String queryStr = "select categoryName as categoryName, sum(amount) as expenseAmount " +
                 "from `Transaction` " +
                 "where type='EXPENSE' and date('now','start of month') <= createdOn " +
+                "and categoryName != 'CORRECTION' " +
                 "group by categoryName";
         SimpleSQLiteQuery query = new SimpleSQLiteQuery(queryStr);
         return transactionDao.getExpensesByCategories(query);
@@ -65,6 +67,7 @@ public class TransactionVM extends AndroidViewModel {
                 "sum(amount) as amount, type from `Transaction` " +
                 "where date('now','start of month', " +
                 "'-" + monthsBackFromCurrentMonth + " month') <= createdOn " +
+                "and categoryName != 'CORRECTION' " +
                 "group by yearMonth, type " +
                 "order by cast(yearMonth as integer)";
         SupportSQLiteQuery query = new SimpleSQLiteQuery(queryStr);
