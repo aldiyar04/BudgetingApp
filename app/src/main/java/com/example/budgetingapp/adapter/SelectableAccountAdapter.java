@@ -48,15 +48,23 @@ public class SelectableAccountAdapter
     }
 
     private void initSelectedPosition() {
-        if (selectedAccountId.isPresent()) {
+        // If transaction is edited, then on done button click in AddEditTransactionActivity
+        // account selection returns to prev one. To prevent this, the position selected by click
+        // is forced for one time.
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean forceSelectedAccPos = sharedPref.getBoolean("ForceSelectedAccPos", false);
+
+        if (selectedAccountId.isPresent() && !forceSelectedAccPos) {
             selectedPosition = IntStream.range(0, accounts.size())
                     .filter(i -> accounts.get(i).id.equals(selectedAccountId.get()))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("Account '"
                             + selectedAccountId + "' is not in AccountAdapter.accounts"));
         } else {
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
             selectedPosition = sharedPref.getInt("SelectedAccPos", 0);
+            sharedPref.edit()
+                    .putBoolean("ForceSelectedAccPos", false)
+                    .apply();
         }
     }
 
@@ -104,6 +112,7 @@ public class SelectableAccountAdapter
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
                 sharedPref.edit()
                         .putInt("SelectedAccPos", selectedPosition)
+                        .putBoolean("ForceSelectedAccPos", true)
                         .apply();
             });
         }
