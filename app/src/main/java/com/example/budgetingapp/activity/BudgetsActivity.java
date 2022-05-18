@@ -25,6 +25,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 
 public class BudgetsActivity extends AppCompatActivity {
+    public static final int PROGRESS_ANIM_DURATION = 700;
     private ActivityBudgetsBinding binding;
 
     @Override
@@ -33,8 +34,11 @@ public class BudgetsActivity extends AppCompatActivity {
         binding = ActivityBudgetsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // To remove flickering elements, initially INVISIBLE,
+        // later set to VISIBLE in main budget LiveData observer method)
+        binding.scrollViewContainer.setVisibility(View.INVISIBLE);
+
         initBottomNav();
-        setVisibilityOnViews();
         initObservingMainBudgetByView();
         setCreateMainBudgetOnClickListener();
         setAddBudgetOnClickListener();
@@ -93,8 +97,8 @@ public class BudgetsActivity extends AppCompatActivity {
     }
 
     private void setViewFromMainBudget(Budget mainBudget) {
-        setVisibilityOnViews();
         if (!mainBudgetExists()) {
+            setVisibilityOnViews(); // VIEWS VISIBILITY SET HERE
             return;
         }
 
@@ -111,6 +115,7 @@ public class BudgetsActivity extends AppCompatActivity {
             setMainBudgetAmountMessage(mainBudget.spendingMax, amountSpent);
             setBudgetSpentProgress(binding.progressBarMainBudget,
                     mainBudget.spendingMax, amountSpent);
+            setVisibilityOnViews(); // VIEWS VISIBILITY SET HERE
         });
 
         setHorizontalBiasForTodayBarAndTextView();
@@ -224,7 +229,7 @@ public class BudgetsActivity extends AppCompatActivity {
                 "progress",
                 0, progress
         );
-        progressAnimator.setDuration(700);
+        progressAnimator.setDuration(PROGRESS_ANIM_DURATION);
         progressAnimator.start();
     }
 

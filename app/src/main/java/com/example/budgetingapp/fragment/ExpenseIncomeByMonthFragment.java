@@ -48,7 +48,7 @@ public class ExpenseIncomeByMonthFragment extends Fragment {
         binding = FragmentExpenseIncomeByMonthBinding.inflate(inflater, container, false);
 
         // To remove flickering elements, initially INVISIBLE,
-        // later set to VISIBLE in refreshPieChart() (LiveData observer method)
+        // later set to VISIBLE in refreshBarChart() (LiveData observer method)
         binding.getRoot().setVisibility(View.INVISIBLE);
 
         getTransactionVM().getMonthAmounts(5)
@@ -181,7 +181,7 @@ public class ExpenseIncomeByMonthFragment extends Fragment {
     }
 
     private float getXWidth(int numBars, float groupWidth) {
-        return groupWidth * numBars - 1;
+        return groupWidth * numBars - 0.5f;
     }
 
     private List<BarEntry> getBarEntriesByType(List<MonthAmount> monthAmounts, TransactionType type) {

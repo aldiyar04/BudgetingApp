@@ -1,5 +1,7 @@
 package com.example.budgetingapp.adapter;
 
+import static com.example.budgetingapp.activity.BudgetsActivity.PROGRESS_ANIM_DURATION;
+
 import android.animation.ObjectAnimator;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -170,7 +172,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.BudgetHold
                 "progress",
                 0, progress
         );
-        progressAnimator.setDuration(700);
+        progressAnimator.setDuration(PROGRESS_ANIM_DURATION);
         progressAnimator.start();
     }
 
