@@ -1,6 +1,5 @@
 package com.example.budgetingapp.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -34,6 +33,8 @@ import com.example.budgetingapp.viewmodel.TransactionVM;
 public class TransactionsFragment extends Fragment {
     private FragmentTransactionsBinding binding;
     private ActivityResultLauncher<Intent> addEditTransactionResultLauncher;
+    private Parcelable topPositionRecyclerViewState;
+    private Parcelable lastPositionRecyclerViewState;
 
     public TransactionsFragment() {}
 
@@ -72,11 +73,19 @@ public class TransactionsFragment extends Fragment {
                             (SettableScrollLinearLayoutManager)
                                     binding.txRecyclerView.getLayoutManager();
 
+                    Parcelable positionState = topPositionRecyclerViewState;
+
                     if (result.getResultCode() == AddEditTransactionActivity.RESULT_ADDED) {
                         layoutManager.setScrollToTop(true);
+                        positionState = topPositionRecyclerViewState;
                     } else {
                         layoutManager.setScrollToTop(false);
+                        if (result.getResultCode() == AddEditTransactionActivity.RESULT_EDITED) {
+                            positionState = lastPositionRecyclerViewState;
+                        }
                     }
+                    binding.txRecyclerView.getLayoutManager()
+                            .onRestoreInstanceState(positionState);
                 });
 
     }
@@ -86,6 +95,10 @@ public class TransactionsFragment extends Fragment {
     }
 
     private boolean startEditTransactionActivity(View view, Transaction transaction) {
+        // Save current recycler view position to restore after transaction is edited
+        lastPositionRecyclerViewState =
+                binding.txRecyclerView.getLayoutManager().onSaveInstanceState();
+
         Intent intent = new Intent(getActivity(), AddEditTransactionActivity.class);
         int activityTypeExtra = getActivityTypeExtra(transaction.type);
         intent.putExtra(AddEditTransactionActivity.EXTRA_ACTIVITY_TYPE, activityTypeExtra);
@@ -148,6 +161,9 @@ public class TransactionsFragment extends Fragment {
         intent.putExtra(AddEditTransactionActivity.EXTRA_ACTIVITY_TYPE,
                 AddEditTransactionActivity.EXTRA_ACTIVITY_TYPE_ADD);
         addEditTransactionResultLauncher.launch(intent);
+
+        topPositionRecyclerViewState = binding.txRecyclerView.getLayoutManager()
+                .onSaveInstanceState();
     }
 
     private AccountVM getAccountVM() {
@@ -181,7 +197,6 @@ public class TransactionsFragment extends Fragment {
 
     private class SettableScrollLinearLayoutManager extends LinearLayoutManager {
         private boolean scrollToTop = false;
-        private Parcelable saveInstanceState;
 //        private int timesCalled = 0;
 
         public SettableScrollLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
@@ -195,7 +210,6 @@ public class TransactionsFragment extends Fragment {
         @Override
         public void onLayoutCompleted(RecyclerView.State state) {
             super.onLayoutCompleted(state);
-            saveInstanceState = onSaveInstanceState();
             if (scrollToTop && state.getItemCount() > 0) {
                 int topPosition = state.getItemCount() - 1;
                 scrollToPositionWithOffset(topPosition, 0);
@@ -209,9 +223,6 @@ public class TransactionsFragment extends Fragment {
 //                } else if (timesCalled == 2) {
 //                    binding.txRecyclerView.setVisibility(View.VISIBLE);
 //                }
-            } else {
-                // restore prev position
-//                onRestoreInstanceState(saveInstanceState);
             }
         }
 
