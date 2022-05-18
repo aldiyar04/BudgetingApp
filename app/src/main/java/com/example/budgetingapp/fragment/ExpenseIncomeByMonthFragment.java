@@ -24,7 +24,6 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -81,6 +80,7 @@ public class ExpenseIncomeByMonthFragment extends Fragment {
         XAxis xAxis = binding.barChart.getXAxis();
         xAxis.setDrawGridLines(false);
         xAxis.setCenterAxisLabels(true);
+
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextSize(14);
         xAxis.setGranularity(2); // 2 bar types: expense and income
