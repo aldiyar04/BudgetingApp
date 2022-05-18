@@ -30,6 +30,7 @@ public class SelectableAccountAdapter
 
     public SelectableAccountAdapter(Context context) {
         this.context = context;
+        initSelectedPosition();
     }
 
     public void setSelectedAccountId(long selectedAccountId) {
@@ -37,15 +38,16 @@ public class SelectableAccountAdapter
     }
 
     public long getSelectedAccountId() {
-        return selectedPosition == RecyclerView.NO_POSITION ?
-                null :
-                accounts.get(selectedPosition).id;
+        return accounts.get(selectedPosition).id;
     }
 
     public void setAccounts(List<Account> accounts) {
         this.accounts = accounts;
         notifyDataSetChanged();
+        initSelectedPosition();
+    }
 
+    private void initSelectedPosition() {
         if (selectedAccountId.isPresent()) {
             selectedPosition = IntStream.range(0, accounts.size())
                     .filter(i -> accounts.get(i).id.equals(selectedAccountId.get()))
@@ -54,11 +56,7 @@ public class SelectableAccountAdapter
                             + selectedAccountId + "' is not in AccountAdapter.accounts"));
         } else {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-            String accountName = sharedPref.getString("AccountName", accounts.get(0).name);
-            selectedPosition = IntStream.range(0, accounts.size())
-                    .filter(i -> accounts.get(i).name.equalsIgnoreCase(accountName))
-                    .findFirst()
-                    .orElse(RecyclerView.NO_POSITION);
+            selectedPosition = sharedPref.getInt("SelectedAccPos", 0);
         }
     }
 
@@ -105,7 +103,7 @@ public class SelectableAccountAdapter
                 notifyDataSetChanged();
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
                 sharedPref.edit()
-                        .putString("AccountName", accountButton.getText().toString())
+                        .putInt("SelectedAccPos", selectedPosition)
                         .apply();
             });
         }

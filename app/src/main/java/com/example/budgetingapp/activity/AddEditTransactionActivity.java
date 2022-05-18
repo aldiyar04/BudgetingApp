@@ -2,6 +2,7 @@ package com.example.budgetingapp.activity;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -44,8 +45,10 @@ public class AddEditTransactionActivity extends AppCompatActivity {
     public static final int EXTRA_ACTIVITY_TYPE_ADD = 0;
     public static final int EXTRA_ACTIVITY_TYPE_EDIT_EXPENSE = 1;
     public static final int EXTRA_ACTIVITY_TYPE_EDIT_INCOME = 2;
-
     public static final String EXTRA_EDITED_TRANSACTION_ID = "EditedTransactionID";
+
+    public static final int RESULT_ADDED = 2;
+    public static final int RESULT_EDITED = 3;
 
     private ActivityAddEditTransactionBinding binding;
 
@@ -116,9 +119,15 @@ public class AddEditTransactionActivity extends AppCompatActivity {
     }
 
     private void setCloseAndDoneButtonListeners() {
-        binding.imageButtonClose.setOnClickListener(view -> finish());
+        binding.imageButtonClose.setOnClickListener(view -> onCloseButtonClick());
         binding.buttonDone.setOnClickListener(view -> onDoneButtonClick());
         binding.imageButtonDone.setOnClickListener(view -> onDoneButtonClick());
+    }
+
+    private void onCloseButtonClick() {
+        Intent intent = new Intent(AddEditTransactionActivity.this, MainActivity.class);
+        setResult(RESULT_CANCELED, intent);
+        finish();
     }
 
     private void onDoneButtonClick() {
@@ -130,14 +139,20 @@ public class AddEditTransactionActivity extends AppCompatActivity {
         long selectedAccId = accountRecyclerViewManager.getSelectedAccountId();
         long enteredAmount = transactionAmountManager.getAmount();
 
+        int activityResult = RESULT_OK;
+
         int activityType = getIntent().getIntExtra(EXTRA_ACTIVITY_TYPE, -1);
         if (activityType == EXTRA_ACTIVITY_TYPE_ADD) {
             saveTransactionAndUpdateBalances(selectedCategoryName, selectedAccId, enteredAmount);
+            activityResult = RESULT_ADDED;
         } else if (activityType == EXTRA_ACTIVITY_TYPE_EDIT_EXPENSE ||
                 activityType == EXTRA_ACTIVITY_TYPE_EDIT_INCOME) {
             updateTransactionAndUpdateBalances(selectedCategoryName, selectedAccId, enteredAmount);
+            activityResult = RESULT_EDITED;
         }
 
+        Intent intent = new Intent(AddEditTransactionActivity.this, MainActivity.class);
+        setResult(activityResult, intent);
         finish();
     }
 
@@ -175,6 +190,7 @@ public class AddEditTransactionActivity extends AppCompatActivity {
                     .putLong("NetWorth", netWorth)
                     .apply();
         });
+
     }
 
     private TransactionVM getTransactionVM() {
